@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Chat IA</title>
+  <title>Chat Simples</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #1a1a1a;
+      background-color: #1e1e1e;
       color: white;
       display: flex;
       flex-direction: column;
@@ -31,46 +31,44 @@
 </head>
 <body>
 
-  <h2>Chat IA</h2>
+  <h2>Chat Simples</h2>
   <div id="chat"></div>
   <input type="text" id="entrada" placeholder="Digite algo">
   <button onclick="enviarMensagem()">Enviar</button>
 
   <script>
-    async function enviarMensagem() {
+    function enviarMensagem() {
       const entrada = document.getElementById("entrada");
       const texto = entrada.value.trim();
       if(!texto) return;
 
       const chat = document.getElementById("chat");
       chat.innerHTML += `<p class="mensagem-usuario">Você: ${texto}</p>`;
-      entrada.value = "";
-      chat.scrollTop = chat.scrollHeight;
 
-      // ⚡ Aqui chama a IA
-      const resposta = await chamarIA(texto);
-
+      const resposta = gerarResposta(texto);
       chat.innerHTML += `<p class="mensagem-ia">IA: ${resposta}</p>`;
+
+      entrada.value = "";
       chat.scrollTop = chat.scrollHeight;
     }
 
-    async function chamarIA(mensagem) {
-      const apiKey = "SUA_CHAVE_AQUI"; // Coloque sua chave da OpenAI aqui
+    function gerarResposta(texto) {
+      texto = texto.toLowerCase();
 
-      const resposta = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: mensagem }]
-        })
-      });
-
-      const dados = await resposta.json();
-      return dados.choices[0].message.content;
+      if(texto.includes("opa") || texto.includes("oi") || texto.includes("olá")) {
+        return "Oi! Como você tá?";
+      }
+      if(texto.includes("como você tá") || texto.includes("tudo bem")) {
+        return "Tô bem, e você?";
+      }
+      if(texto.includes("seu nome")) {
+        return "Eu sou sua mini IA!";
+      }
+      if(texto.includes("que horas")) {
+        const agora = new Date();
+        return `Agora são ${agora.getHours()}:${agora.getMinutes()}`;
+      }
+      return "Desculpa, não entendi 😅";
     }
   </script>
 
