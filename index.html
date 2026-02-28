@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Chat IA Real Time</title>
+  <title>Mini Chat IA</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -46,56 +46,61 @@
 </head>
 <body>
 
-  <h2>Chat IA em Tempo Real</h2>
-  <div id="chat"></div>
+<h2>Mini Chat IA</h2>
+<div id="chat"></div>
 
-  <div>
-    <input type="text" id="entrada" placeholder="Digite algo...">
-    <button onclick="enviarMensagem()">Enviar</button>
-  </div>
+<div>
+  <input type="text" id="entrada" placeholder="Digite algo...">
+  <button onclick="enviarMensagem()">Enviar</button>
+</div>
 
-  <script>
-    async function enviarMensagem() {
-      const entrada = document.getElementById("entrada");
-      const texto = entrada.value.trim();
-      if(!texto) return;
+<script>
+  let ultimoUsuario = ""; // Guarda última mensagem do usuário
 
-      const chat = document.getElementById("chat");
-      chat.innerHTML += `<p class="mensagem-usuario">Você: ${texto}</p>`;
-      chat.scrollTop = chat.scrollHeight;
-      entrada.value = "";
+  function enviarMensagem() {
+    const entrada = document.getElementById("entrada");
+    const texto = entrada.value.trim();
+    if(!texto) return;
 
-      const resposta = await chamarIA(texto);
-      chat.innerHTML += `<p class="mensagem-ia">IA: ${resposta}</p>`;
-      chat.scrollTop = chat.scrollHeight;
+    const chat = document.getElementById("chat");
+    chat.innerHTML += `<p class="mensagem-usuario">Você: ${texto}</p>`;
+    chat.scrollTop = chat.scrollHeight;
+    entrada.value = "";
+
+    const resposta = gerarResposta(texto);
+    chat.innerHTML += `<p class="mensagem-ia">IA: ${resposta}</p>`;
+    chat.scrollTop = chat.scrollHeight;
+
+    ultimoUsuario = texto.toLowerCase(); // Atualiza última mensagem
+  }
+
+  function gerarResposta(texto) {
+    texto = texto.toLowerCase();
+
+    // Respostas básicas
+    if(texto.includes("opa") || texto.includes("oi") || texto.includes("olá")) {
+      return "Opa! Tudo bem?";
+    }
+    if(texto.includes("tudo bem") || texto.includes("como você tá")) {
+      return "Tô bem, e você?";
     }
 
-    async function chamarIA(mensagem) {
-      // ⚠️ SOMENTE PARA TESTE LOCAL
-      // Substitua pelo seu backend seguro em produção
-      const apiKey = "SUA_CHAVE_AQUI";
-
-      try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: mensagem }]
-          })
-        });
-
-        const dados = await response.json();
-        return dados.choices[0].message.content;
-      } catch (e) {
-        console.error(e);
-        return "Ocorreu um erro ao tentar responder 😅";
-      }
+    // Analisando a última mensagem do usuário
+    if(ultimoUsuario.includes("opa")) {
+      if(texto.includes("tudo")) return "Que bom! E como foi seu dia?";
+      if(texto.includes("bem")) return "Que ótimo! O que você está fazendo?";
     }
-  </script>
+
+    if(ultimoUsuario.includes("tudo bem") || ultimoUsuario.includes("como você tá")) {
+      if(texto.includes("tudo")) return "Legal! Quer conversar sobre algo?";
+      if(texto.includes("bem")) return "Que bom! Tem algo divertido acontecendo hoje?";
+    }
+
+    if(texto.includes("seu nome")) return "Eu sou sua Mini IA!";
+
+    return "Desculpa, não entendi 😅";
+  }
+</script>
 
 </body>
 </html>
