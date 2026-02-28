@@ -1,40 +1,29 @@
-const input = document.getElementById('input');
-const messages = document.getElementById('messages');
+function sendMessage() {
+  const input = document.getElementById('userInput');
+  const messagesDiv = document.getElementById('messages');
+  const text = input.value;
 
-// Carregar histórico do localStorage
-let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
-chatHistory.forEach(msg => addMessage(msg.text, msg.type));
+  if(text === "") return;
 
-input.addEventListener('keydown', function(e) {
-  if(e.key === 'Enter' && input.value.trim() !== '') {
-    const userText = input.value;
-    addMessage(userText, 'user');
-    saveMessage(userText, 'user');
+  // Adiciona mensagem do usuário
+  const userMsg = document.createElement('div');
+  userMsg.className = 'message user';
+  userMsg.textContent = text;
+  messagesDiv.appendChild(userMsg);
 
-    const response = getAIResponse(userText);
-    addMessage(response, 'ai');
-    saveMessage(response, 'ai');
-
-    input.value = '';
+  // Resposta da IA (exemplo simples com variáveis)
+  let botResponse = "";
+  if(text.toLowerCase() === "oi") {
+    botResponse = "Olá! Como posso ajudar?";
+  } else {
+    botResponse = "Desculpe, não entendi!";
   }
-});
 
-function addMessage(text, type) {
-  const div = document.createElement('div');
-  div.classList.add('message', type);
-  div.innerText = text;
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-}
+  const botMsg = document.createElement('div');
+  botMsg.className = 'message bot';
+  botMsg.textContent = botResponse;
+  messagesDiv.appendChild(botMsg);
 
-function saveMessage(text, type) {
-  chatHistory.push({text, type});
-  localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
-}
-
-function getAIResponse(userMessage) {
-  const msg = userMessage.toLowerCase();
-  if(msg.includes('oi')) return 'Oi! Como você está?';
-  if(msg.includes('tchau')) return 'Tchau! Até mais!';
-  return 'Não entendi, pode repetir?';
+  input.value = "";
+  messagesDiv.scrollTop = messagesDiv.scrollHeight; // rola para baixo
 }
