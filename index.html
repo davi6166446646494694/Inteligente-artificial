@@ -3,13 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minha IA com Histórico</title>
+<title>Minha IA - Estilo ChatGPT</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="chat-container">
-  <div class="messages" id="messages"></div>
-  <input type="text" id="input" placeholder="Digite sua mensagem..." />
+<div class="app-container">
+  <aside class="sidebar">
+    <h2>Minha IA</h2>
+    <button id="clear">Limpar Histórico</button>
+  </aside>
+
+  <main class="chat-area">
+    <div class="messages" id="messages"></div>
+    <div class="input-container">
+      <input type="text" id="input" placeholder="Digite sua mensagem..." />
+      <button id="send">Enviar</button>
+    </div>
+  </main>
 </div>
 
 <script src="script.js"></script>
