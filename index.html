@@ -1,48 +1,14 @@
-import tkinter as tk
-
-# Função simples da IA
-def gerar_resposta(pergunta):
-    pergunta = pergunta.lower()
-    if "oi" in pergunta:
-        return "Olá! Como você está?"
-    elif "tudo bem" in pergunta:
-        return "Estou ótimo! E você?"
-    elif "adeus" in pergunta:
-        return "Até mais! Volte sempre."
-    else:
-        return "Desculpe, ainda estou aprendendo!"
-
-# Criando janela principal
-janela = tk.Tk()
-janela.title("💻 Minha IA Full")
-janela.geometry("500x400")
-janela.resizable(False, False)
-
-# Título
-titulo = tk.Label(janela, text="💡 Minha IA", font=("Arial", 24))
-titulo.pack(pady=10)
-
-# Caixa de entrada do usuário
-entrada_usuario = tk.Entry(janela, width=50, font=("Arial", 14))
-entrada_usuario.pack(pady=10)
-
-# Caixa de resposta
-resposta_label = tk.Label(janela, text="", font=("Arial", 14), wraplength=450, justify="left")
-resposta_label.pack(pady=20)
-
-# Função do botão
-def enviar():
-    pergunta = entrada_usuario.get()
-    if pergunta.strip() == "":
-        resposta_label.config(text="Digite alguma coisa primeiro!")
-        return
-    resposta = gerar_resposta(pergunta)
-    resposta_label.config(text=resposta)
-    entrada_usuario.delete(0, tk.END)
-
-# Botão enviar
-botao_enviar = tk.Button(janela, text="Enviar", command=enviar, font=("Arial", 14), bg="#4CAF50", fg="white")
-botao_enviar.pack(pady=10)
-
-# Rodar janela
-janela.mainloop()
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Simples</title>
+</head>
+<body>
+  <h1>Meu Chat</h1>
+  <div>
+    <input type="text" placeholder="Digite aqui...">
+    <button>Enviar</button>
+  </div>
+</body>
+</html>
