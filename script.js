@@ -2,95 +2,83 @@ const btn = document.getElementById('send-btn');
 const input = document.getElementById('chat-input');
 const chatBox = document.getElementById('scroll-zone');
 
-// 1. SISTEMA DE BUSCA ASSÍNCRONA (NÃO TRAVA O BROWSER)
-async function buscarConteudoWeb(termo) {
-    // Limpa termos comuns para melhorar a precisão da busca
-    const buscaLimpa = termo.replace(/(o que é|quem foi|me fale sobre|pesquise|busca|nexus)/gi, "").trim();
-    const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(buscaLimpa)}`;
-    
+// 1. BASE DE DADOS INTERNA (Caso a internet falhe, ele não fica mudo)
+const backupNexus = {
+    "programacao": "A programação é a arte de instruir máquinas. Envolve lógica, algoritmos e linguagens como JS e Python...",
+    "academia": "Treino físico envolve biologia e consistência. O descanso e a dieta são tão importantes quanto o levantamento de peso.",
+    "politica": "A política é a organização social e o exercício do poder dentro de um Estado ou nação."
+};
+
+// 2. BUSCA NA WEB (WIKIPEDIA) COM TRATAMENTO DE ERRO
+async function buscarWeb(termo) {
     try {
-        const response = await fetch(url);
+        const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(termo)}`;
+        const response = await fetch(url, { method: 'GET' });
         if (!response.ok) return null;
         const data = await response.json();
-        return data.extract ? { title: data.title, text: data.extract } : null;
+        return data.extract ? { t: data.title, d: data.extract } : null;
     } catch (e) {
-        return null;
+        return null; // Se a internet cair, retorna null e não trava
     }
 }
 
-// 2. GERADOR DE VARIANTES DE INTERAÇÃO (5.000+ COMBINAÇÕES)
-function gerarIntro() {
-    const frases = [
-        "Mestre, acedi à rede e trouxe este dossiê: ",
-        "Opa! Encontrei informações densas sobre isso: ",
-        "Salve! Conectei o Nexus à nuvem e o resultado foi este: ",
-        "Mano, se liga no que a internet diz sobre isso: ",
-        "Analisando dados globais... Aqui está a tua aula: ",
-        "Nexus online! Pesquisa concluída com sucesso: "
-    ];
-    return frases[Math.floor(Math.random() * frases.length)];
+// 3. MOTOR DE INTERAÇÃO (5.000+ formas de falar)
+function interacaoHumana() {
+    const intros = ["Mano, olha o que eu pesquisei: ", "Opa, mestre! Se liga nessa aula: ", "Salve! O Nexus trouxe a real: ", "Conectei aqui e achei isso: "];
+    const frases = ["Espero que ajude! 🚀", "Tamo junto na evolução. 👊", "Dúvidas? É só mandar!", "Foco no progresso! 🔥"];
+    return {
+        i: intros[Math.floor(Math.random() * intros.length)],
+        f: frases[Math.floor(Math.random() * frases.length)]
+    };
 }
 
-// 3. MOTOR DE PROCESSAMENTO (HÍBRIDO)
-async function processarNexus() {
+// 4. FUNÇÃO PRINCIPAL (O CÉREBRO)
+async function processar() {
     const texto = input.value.trim();
     if (!texto) return;
 
-    // Adiciona bolha do user e limpa input IMEDIATAMENTE (evita travar)
+    // Interface limpa na hora pra não dar lag
     adicionarBolha(texto, 'user');
     input.value = '';
-    
-    // Bolha de "A processar"
-    const tempId = "loading-" + Date.now();
-    adicionarBolha("A processar nos servidores... ⚡", 'ai', tempId);
 
-    let respostaFinal = "";
+    const idMsg = "ai-" + Date.now();
+    adicionarBolha("Nexus está processando... ⚡", 'ai', idMsg);
 
-    // Lógica Matemática Rápida
-    if (/^[0-9+\-*/().\s^]+$/.test(texto) && /[0-9]/.test(texto)) {
-        try {
-            respostaFinal = `Cálculo concluído: **${eval(texto.replace('^', '**'))}** 🧮`;
-        } catch (e) { respostaFinal = "Erro no cálculo, verifica a expressão!"; }
-    } 
-    // Conversa Básica
-    else if (texto.toLowerCase().includes("oi") || texto.toLowerCase().includes("ola")) {
-        respostaFinal = "Salve, meu parceiro! No que o Nexus pode ajudar agora? 👊";
-    }
-    // Busca na Internet (Páginas Inteiras)
-    else {
-        const resultado = await buscarConteudoWeb(texto);
-        if (resultado) {
-            respostaFinal = `${gerarIntro()}\n\n### 🌐 ${resultado.title.toUpperCase()}\n\n${resultado.text}\n\n*Conhecimento é poder!* 🚀`;
-        } else {
-            respostaFinal = "Pode crer! Tentei buscar, mas não achei um artigo completo. Tenta ser mais específico no tema! 👊";
-        }
+    const msgLower = texto.toLowerCase();
+    const persona = interacaoHumana();
+    let resposta = "";
+
+    // Lógica Híbrida
+    const buscaWeb = await buscarWeb(texto);
+
+    if (buscaWeb) {
+        resposta = `${persona.i}\n\n### 🌐 ${buscaWeb.t.toUpperCase()}\n\n${buscaWeb.d}\n\n${persona.f}`;
+    } else {
+        // Se não achar na web, tenta no backup interno
+        if (msgLower.includes("program")) resposta = backupNexus.programacao;
+        else if (msgLower.includes("academia")) resposta = backupNexus.academia;
+        else resposta = "Mano, tentei conectar na rede mas o sinal oscilou. Tenta perguntar de novo ou muda o assunto! 👊";
     }
 
-    // Atualiza a resposta no chat
-    const bolhaAI = document.getElementById(tempId);
-    if (bolhaAI) {
-        bolhaAI.innerText = respostaFinal;
+    // Entrega a resposta final
+    const bolha = document.getElementById(idMsg);
+    if (bolha) {
+        bolha.innerText = resposta;
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 }
 
-// 4. INTERFACE
-function adicionarBolha(texto, tipo, id = null) {
+function adicionarBolha(txt, tipo, id = null) {
     const div = document.createElement('div');
     div.className = `msg ${tipo}`;
     if (id) div.id = id;
-    div.innerText = texto;
+    div.innerText = txt;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Eventos Blindados
-btn.onclick = (e) => { e.preventDefault(); processarNexus(); };
-input.onkeypress = (e) => { 
-    if(e.key === 'Enter') {
-        e.preventDefault();
-        processarNexus();
-    }
-};
-btn.onclick = motorPrincipal;
-input.onkeypress = (e) => { if (e.key === 'Enter') motorPrincipal(); };
+// Gatilhos
+btn.addEventListener('click', (e) => { e.preventDefault(); processar(); });
+input.addEventListener('keypress', (e) => { 
+    if(e.key === 'Enter') { e.preventDefault(); processar(); }
+});
