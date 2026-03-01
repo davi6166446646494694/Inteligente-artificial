@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus AI | Full View</title>
+    <title>Nexus AI | Ultra Scroll & Swipe</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #050507;
-            --glass: rgba(255, 255, 255, 0.07);
+            --glass: rgba(255, 255, 255, 0.05);
             --border: rgba(255, 255, 255, 0.1);
             --accent: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
         }
@@ -19,91 +19,202 @@
             height: 100%;
             background-color: var(--bg);
             color: white;
-            overflow: hidden; /* Impede o scroll torto da página */
+            overflow: hidden; /* Trava a página principal */
         }
 
-        /* Container Principal com Scroll Horizontal para o Histórico */
-        .wrapper {
+        /* Container que desliza lateralmente */
+        .viewport {
             display: flex;
-            width: 140vw; /* 40vw para o histórico + 100vw para o chat */
+            width: 130vw; /* Histórico (30vw) + Chat (100vw) */
             height: 100vh;
-            transition: transform 0.3s ease;
-            transform: translateX(-40vw); /* Começa mostrando só o chat */
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translateX(-30vw); /* Inicia com chat centralizado */
         }
 
-        /* Se estiver aberto, move para mostrar o histórico */
-        .wrapper.open { transform: translateX(0); }
+        .viewport.menu-open { transform: translateX(0); }
 
-        /* MENU LATERAL (HISTÓRICO) */
+        /* MENU LATERAL (30% da tela no PC, vira Gaveta no Mobile) */
         .sidebar {
-            width: 40vw;
+            width: 30vw;
             height: 100%;
-            background: #0f0f13;
+            background: #0d0d10;
             border-right: 1px solid var(--border);
             padding: 20px;
         }
 
-        /* ÁREA DO CHAT (OCUPA A TELA CHEIA) */
-        .chat-section {
+        /* CHAT EM TELA CHEIA */
+        .chat-area {
             width: 100vw;
             height: 100%;
             display: flex;
             flex-direction: column;
-            position: relative;
         }
 
         .header {
-            height: 60px;
-            padding: 0 15px;
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.4);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            border-bottom: 1px solid var(--border);
-            background: rgba(0,0,0,0.3);
+            justify-content: space-between;
         }
 
-        .menu-btn {
-            background: var(--glass);
-            border: none;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-right: 15px;
-            cursor: pointer;
-        }
-
-        /* CONTEÚDO DAS MENSAGENS */
-        .messages-container {
+        /* ÁREA DE SCROLL INFINITO */
+        #scroll-zone {
             flex: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* Scroll vertical liberado aqui */
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
+            scroll-behavior: smooth;
         }
+
+        /* Custom Scrollbar */
+        #scroll-zone::-webkit-scrollbar { width: 4px; }
+        #scroll-zone::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
         .msg {
             max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 18px;
+            padding: 12px 18px;
+            border-radius: 20px;
             font-size: 16px;
-            line-height: 1.4;
+            line-height: 1.5;
+            animation: pop 0.2s ease-out;
         }
 
         .ai { background: var(--glass); border: 1px solid var(--border); align-self: flex-start; }
-        .user { background: #6366f1; align-self: flex-end; }
+        .user { background: #6366f1; align-self: flex-end; color: white; }
 
-        /* INPUT FIXO NO RODAPÉ */
-        .input-area {
-            padding: 20px;
-            background: var(--bg);
+        /* BARRA DE INPUT FIXA */
+        .footer {
+            padding: 15px 20px;
+            background: #0a0a0c;
             border-top: 1px solid var(--border);
         }
 
-        .input-box {
+        .input-group {
             display: flex;
             background: rgba(255,255,255,0.05);
-            border-radius: 30px;
-            padding: 5px 5px 5px 20px;
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            padding: 5px 5px 5px 15px;
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .send-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        @keyframes pop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="viewport" id="viewport">
+        <aside class="sidebar">
+            <h2 style="font-size: 12px; color: #555; margin-bottom: 20px;">HISTÓRICO</h2>
+            <div style="padding: 10px; border-radius: 8px; background: var(--glass); font-size: 13px;">Primeiro Chat</div>
+        </aside>
+
+        <main class="chat-area">
+            <header class="header">
+                <button id="menu-toggle" style="background:none; border:none; color:#818cf8; cursor:pointer;">☰ Menu</button>
+                <div style="font-weight: 600;">Nexus AI</div>
+                <div style="width: 40px;"></div> </header>
+
+            <div id="scroll-zone">
+                <div class="msg ai">O Scroll está liberado! Arraste para a DIREITA para abrir o menu ou para a ESQUERDA para fechar.</div>
+            </div>
+
+            <footer class="footer">
+                <div class="input-group">
+                    <input type="text" id="chat-input" placeholder="Mensagem..." autocomplete="off">
+                    <button class="send-btn" id="send-btn">↑</button>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        const viewport = document.getElementById('viewport');
+        const scrollZone = document.getElementById('scroll-zone');
+        const input = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const menuBtn = document.getElementById('menu-toggle');
+
+        // Alternar Menu
+        menuBtn.onclick = () => viewport.classList.toggle('menu-open');
+
+        // Lógica de Envio e Auto-Scroll
+        function performSend() {
+            const text = input.value.trim();
+            if(!text) return;
+
+            const u = document.createElement('div');
+            u.className = 'msg user';
+            u.innerText = text;
+            scrollZone.appendChild(u);
+            
+            input.value = '';
+            
+            // Força o scroll para o final
+            scrollZone.scrollTop = scrollZone.scrollHeight;
+
+            // Fecha menu se estiver aberto ao digitar
+            viewport.classList.remove('menu-open');
+
+            // Simula Resposta
+            setTimeout(() => {
+                const a = document.createElement('div');
+                a.className = 'msg ai';
+                a.innerText = "Recebi! O scroll automático garantiu que você visse esta mensagem.";
+                scrollZone.appendChild(a);
+                scrollZone.scrollTop = scrollZone.scrollHeight;
+            }, 500);
+        }
+
+        sendBtn.onclick = performSend;
+        input.onkeypress = (e) => { if(e.key === 'Enter') performSend(); };
+
+        // --- LÓGICA DE SWIPE (ARRASTAR COM O DEDO) ---
+        let touchStart = 0;
+        let touchEnd = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStart = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEnd = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const diff = touchEnd - touchStart;
+            // Arrastou para a direita (abre menu)
+            if (diff > 100) viewport.classList.add('menu-open');
+            // Arrastou para a esquerda (fecha menu)
+            if (diff < -100) viewport.classList.remove('menu-open');
+        }
+    </script>
+</body>
+</html>
             border: 1px solid var(--border);
         }
 
