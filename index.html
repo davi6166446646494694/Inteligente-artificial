@@ -1,62 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mini Chat IA</title>
+  <title>Chat IA</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1e1e1e;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      padding: 20px;
-    }
-    #chat {
-      width: 500px;
-      max-width: 90%;
-      height: 400px;
-      background-color: #2e2e2e;
-      border: 2px solid #444;
-      padding: 10px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-    }
-    input {
-      width: 400px;
-      padding: 10px;
-      margin-right: 5px;
-      border: none;
-      border-radius: 5px;
-    }
-    button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      background-color: #4fc3f7;
-      color: black;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .mensagem-usuario { color: #4fc3f7; }
-    .mensagem-ia { color: #ffeb3b; }
+    body { font-family: Arial; background:#1e1e1e; color:white; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; height:100vh; padding:20px;}
+    #chat { width:500px; height:400px; background:#2e2e2e; border:2px solid #444; padding:10px; overflow-y:auto; margin-bottom:10px; }
+    input { width:400px; padding:10px; margin-right:5px; border-radius:5px; border:none; }
+    button { padding:10px 15px; border-radius:5px; border:none; background:#4fc3f7; color:black; cursor:pointer; font-weight:bold; }
+    .mensagem-usuario{color:#4fc3f7;} .mensagem-ia{color:#ffeb3b;}
   </style>
 </head>
 <body>
 
-<h2>Mini Chat IA</h2>
+<h2>Chat IA</h2>
 <div id="chat"></div>
-
 <div>
   <input type="text" id="entrada" placeholder="Digite algo...">
   <button onclick="enviarMensagem()">Enviar</button>
 </div>
 
 <script>
-  let ultimoUsuario = ""; // Guarda última mensagem do usuário
+  // 1️⃣ Banco de palavras e respostas
+  const banco = [
+    { palavras: ["oi", "opa"], respostas: ["Oi! Tudo bem?", "Opa! Como você tá?"] },
+    { palavras: ["tudo bem", "como você tá"], respostas: ["Tô bem 😎 e você?", "Estou ótimo!"] },
+    { palavras: ["seu nome", "quem é você"], respostas: ["Sou sua IA!", "Eu sou um chat criado por você 😄"] }
+    // você vai adicionar até 1000 objetos aqui
+  ];
 
+  let ultimoUsuario = "";
+
+  // 2️⃣ Função para enviar a mensagem
   function enviarMensagem() {
     const entrada = document.getElementById("entrada");
     const texto = entrada.value.trim();
@@ -67,38 +41,36 @@
     chat.scrollTop = chat.scrollHeight;
     entrada.value = "";
 
-    const resposta = gerarResposta(texto);
+    const resposta = gerarResposta(texto); // chama a função que você me enviou
     chat.innerHTML += `<p class="mensagem-ia">IA: ${resposta}</p>`;
     chat.scrollTop = chat.scrollHeight;
 
-    ultimoUsuario = texto.toLowerCase(); // Atualiza última mensagem
+    ultimoUsuario = texto.toLowerCase();
   }
 
+  // 3️⃣ Função que você enviou
   function gerarResposta(texto) {
     texto = texto.toLowerCase();
 
-    // Respostas básicas
-    if(texto.includes("opa") || texto.includes("oi") || texto.includes("olá")) {
-      return "Opa! Tudo bem?";
-    }
-    if(texto.includes("tudo bem") || texto.includes("como você tá")) {
-      return "Tô bem, e você?";
-    }
+    let respostasPossiveis = [];
 
-    // Analisando a última mensagem do usuário
-    if(ultimoUsuario.includes("opa")) {
-      if(texto.includes("tudo")) return "Que bom! E como foi seu dia?";
-      if(texto.includes("bem")) return "Que ótimo! O que você está fazendo?";
+    // Procura palavras correspondentes
+    for (let item of banco) {
+      for (let palavra of item.palavras) {
+        if (texto.includes(palavra)) {
+          respostasPossiveis.push(...item.respostas);
+          break; // Evita duplicar respostas
+        }
+      }
     }
 
-    if(ultimoUsuario.includes("tudo bem") || ultimoUsuario.includes("como você tá")) {
-      if(texto.includes("tudo")) return "Legal! Quer conversar sobre algo?";
-      if(texto.includes("bem")) return "Que bom! Tem algo divertido acontecendo hoje?";
+    // Se encontrou algo, escolhe aleatória
+    if (respostasPossiveis.length > 0) {
+      return respostasPossiveis[Math.floor(Math.random() * respostasPossiveis.length)];
     }
 
-    if(texto.includes("seu nome")) return "Eu sou sua Mini IA!";
-
-    return "Desculpa, não entendi 😅";
+    // Se não encontrou, resposta padrão
+    return "Hmm... me conta mais sobre isso 🤔";
   }
 </script>
 
