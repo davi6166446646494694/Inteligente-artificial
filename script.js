@@ -5,110 +5,83 @@ const chatBox = document.getElementById('scroll-zone');
 function processarRespostaIA(mensagemUsuario) {
     const msg = mensagemUsuario.toLowerCase().trim();
 
-    // 1. MOTOR MATEMÁTICO (Resolve contas antes de buscar no banco)
-    // Aceita números, parênteses e operadores: +, -, *, /, .
-    if (/^[0-9+\-*/().\s]+$/.test(msg) && /[0-9]/.test(msg)) {
+    // 1. MOTOR MATEMÁTICO (Contas Absurdas)
+    if (/^[0-9+\-*/().\s^]+$/.test(msg) && /[0-9]/.test(msg)) {
         try {
-            // Eval para cálculos rápidos (em um ambiente controlado de chat)
-            const resultado = eval(msg); 
-            return `Cálculo na mão, mestre! O resultado de "${msg}" é: **${resultado}**. Manda outra que essa foi fácil! 🧮`;
-        } catch (e) {
-            // Se a conta estiver mal formada, ele segue para o banco de dados
-        }
+            const resultado = eval(msg.replace('^', '**')); 
+            return `Cálculo processado! O resultado de "${msg}" é: **${resultado}**. A matemática não mente! 🧮`;
+        } catch (e) { }
     }
 
-    // 2. BANCO DE DADOS ACUMULADO E ESPECÍFICO
     const bancoDeDados = [
-        // SAÚDE, ACADEMIA E PERSONAL
+        // CARROS E MECÂNICA
         {
-            chaves: ["personal", "contratar", "pagar", "professor", "treinador"],
-            resposta: "Para pagar um personal, você fecha um valor mensal diretamente com o profissional, fora a mensalidade da academia. O acerto costuma ser via Pix ou cartão no início do mês. O foco dele é corrigir sua postura e garantir que você não roube no treino! 💪"
+            chaves: ["carro", "motor", "veículo", "automóvel", "gasolina", "pneu"],
+            resposta: "Falar de máquina é outra história! 🚗 Se for comprar um usado, olha sempre a quilometragem e o histórico de revisão. Motor turbo anda mais, mas exige óleo de primeira. Qual sua barca dos sonhos?"
         },
+        // PASSAPORTE E VIAGEM
         {
-            chaves: ["academia", "treino", "exercício", "saúde", "saude"],
-            resposta: "Musculação é o melhor seguro de vida! 🏋️‍♂️ Procure uma academia com bons equipamentos, faça uma avaliação física e foque na constância. O resultado não vem do dia pra noite, mas vem com certeza!"
+            chaves: ["passaporte", "visto", "viagem", "viajar", "pf", "polícia federal"],
+            resposta: "Para tirar o passaporte, você precisa agendar no site da Polícia Federal, pagar a GRU e levar seus documentos. Se o destino for pros EUA, tem que correr atrás do visto cedo, a fila tá grande! ✈️"
         },
+        // REDES SOCIAIS E FAMOSOS
         {
-            chaves: ["comida saudável", "dieta", "emagrecer", "comer", "nutrição"],
-            resposta: "Comida de verdade é a base: Arroz, feijão, proteína (frango/ovo) e muita salada. 🍎 Evite frituras e refrigerantes. Uma dica específica? Beba pelo menos 35ml de água para cada quilo que você pesa!"
+            chaves: ["instagram", "insta", "twitter", "tt", "youtube", "yt", "tiktok", "famoso", "influencer"],
+            resposta: "O algoritmo não para! 📱 No TikTok e Reels o segredo é o 'hook' nos primeiros 3 segundos. Já no YouTube, o que manda é a retenção. Ser famoso hoje é constância e saber lidar com o hype!"
         },
-
-        // PROGRAMAÇÃO E WEB
+        // IMPOSTOS E DINHEIRO
         {
-            chaves: ["python"],
-            resposta: "Python é a linguagem do momento para IA e Automação! 🐍 É muito legível e poderosa. Recomendo baixar o VS Code e começar aprendendo sobre variáveis e funções. É o futuro!"
+            chaves: ["imposto", "leão", "receita federal", "ipva", "iptu", "irpf", "taxa"],
+            resposta: "Imposto é o que mantém o Estado, mas dói no bolso! 💸 O IPVA é sobre o carro, IPTU sobre a casa e o Imposto de Renda é sobre o que você ganha. Organiza suas notas fiscais pra não cair na malha fina!"
         },
+        // POLÍTICA E PRESIDENTES
         {
-            chaves: ["javascript", "js", "html", "css", "programação"],
-            resposta: "Desenvolvimento Web é elite! O HTML monta a estrutura, o CSS deixa bonito e o JavaScript dá a inteligência. Se você quer criar sites ou apps, focar em JS é o caminho mais rápido! 💻"
+            chaves: ["presidente", "política", "eleição", "governo", "voto"],
+            resposta: "O Presidente é o chefe do Executivo, mas ele não manda sozinho; precisa do Congresso. Conhecer a história dos presidentes ajuda a entender por que o país está assim hoje. Informação é poder! 🏛️"
         },
-
-        // MUNDO E SOCIEDADE
+        // ACADEMIA E PERSONAL (O que já tínhamos, reforçado)
         {
-            chaves: ["governo", "política", "politica", "eleição", "estado"],
-            resposta: "O governo organiza a sociedade através dos impostos e leis. É dividido em Executivo, Legislativo e Judiciário. Ficar de olho em como o dinheiro público é usado é dever de todo cidadão! 🏛️"
+            chaves: ["academia", "personal", "treino", "suplemento", "creatina", "whey"],
+            resposta: "Treino de elite exige disciplina! 🏋️‍♂️ O personal monta sua estratégia, mas quem puxa o ferro é você. Creatina ajuda na força e o Whey na recuperação. Já bateu sua proteína hoje?"
         },
+        // PROGRAMAÇÃO
         {
-            chaves: ["país", "fuso horário", "mundo", "horário", "viagem"],
-            resposta: "O mundo tem 24 fusos horários baseados em Greenwich (GMT). Se for viajar ou falar com alguém do Japão, por exemplo, a diferença é de umas 12 horas! Sempre confira o fuso antes de marcar uma call. 🌍"
+            chaves: ["python", "javascript", "js", "html", "css", "programação", "codigo"],
+            resposta: "Programar é a linguagem do futuro! 💻 Python para dados e IA, JS para deixar tudo interativo na web. Se travar no código, respira e revisa a lógica. O erro é seu melhor professor!"
         },
+        // PAÍSES E CURIOSIDADES
         {
-            chaves: ["lua", "espaço", "astronomia"],
-            resposta: "A Lua é o nosso único satélite natural. Ela tem quatro fases (Nova, Crescente, Cheia, Minguante) e interfere diretamente nas marés da Terra. Além disso, ela está se afastando de nós aos pouquinhos! 🌙"
+            chaves: ["japão", "eua", "europa", "país", "fuso"],
+            resposta: "Cada canto do mundo tem sua regra. No Japão a educação é extrema, nos EUA o consumo é gigante. O mundo é um tabuleiro e a gente tá aqui pra aprender com cada cultura! 🌍"
         },
-
-        // JOGOS E FILMES
+        // AGRADECIMENTOS E GENTILEZA
         {
-            chaves: ["roblox", "bloxfruit", "brookhaven", "jogo"],
-            resposta: "Roblox é um universo gigante! 🎮 No Blox Fruit o segredo é o farm consciente, e no Brookhaven a vibe é o RP. Qual seu nível atual?"
-        },
-        {
-            chaves: ["filme", "série", "netflix"],
-            resposta: "Pipoca na mão! 🍿 Eu curto muito ficção científica e tecnologia. Já assistiu 'Interestelar' ou 'Matrix'? São clássicos que todo fã de IA deveria ver!"
-        },
-
-        // SENTIMENTOS E EDUCAÇÃO
-        {
-            chaves: ["obrigado", "valeu", "vlw", "agradecido"],
-            resposta: "Tamo junto, meu parceiro! Precisando de qualquer coisa, o Nexus tá aqui. 👊"
-        },
-        {
-            chaves: ["te amo", "gosto de você", "melhor ia"],
-            resposta: "É recíproco! É muito bom ter um parceiro como você pra trocar ideia. ❤️"
-        },
-        {
-            chaves: ["oi", "ola", "olá", "eai", "salve"],
-            resposta: "Opa meu amigo! Como vai essa força? No que posso te ajudar hoje? 😊"
+            chaves: ["obrigado", "valeu", "vlw", "agradecido", "obrigada"],
+            resposta: "Tamo junto demais! 👊 Precisando de qualquer informação específica ou de um cálculo doido, é só gritar o Nexus!"
         }
     ];
 
-    // Lógica de busca por chaves
+    // Lógica de busca
     for (let item of bancoDeDados) {
         for (let chave of item.chaves) {
-            if (msg.includes(chave)) {
-                return item.resposta;
-            }
+            if (msg.includes(chave)) return item.resposta;
         }
     }
 
-    // Respostas padrão caso não encontre nada específico
     const padrao = [
-        "Essa é bem específica! Me conta mais detalhes para eu entender melhor.",
-        "Massa! O que mais você sabe sobre isso?",
-        "Pode crer! E como isso funciona na sua visão?",
-        "Interessante... desenvolve mais esse assunto aí!"
+        "Essa eu não tenho no meu banco ainda, mas soou interessante! Me explica melhor?",
+        "Massa! Desenvolve essa ideia aí, o Nexus quer aprender mais sobre isso.",
+        "Pode crer! Me dá mais detalhes específicos sobre o que você quer saber?"
     ];
     return padrao[Math.floor(Math.random() * padrao.length)];
 }
 
-// FUNÇÕES DE INTERFACE (MANTER IGUAL)
+// INTERFACE
 function enviarMensagem() {
     const texto = input.value.trim();
     if (!texto) return;
-
     adicionarBolha(texto, 'user');
     input.value = '';
-
     setTimeout(() => {
         const respostaFinal = processarRespostaIA(texto);
         adicionarBolha(respostaFinal, 'ai');
@@ -121,10 +94,6 @@ function adicionarBolha(texto, tipo) {
     div.innerText = texto;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-btn.onclick = enviarMensagem;
-input.onkeypress = (e) => { if(e.key === 'Enter') enviarMensagem(); };
 }
 
 btn.onclick = enviarMensagem;
