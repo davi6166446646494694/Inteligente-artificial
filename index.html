@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus AI - Voice</title>
+    <title>Nexus AI - 350px</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,37 +12,113 @@
             --border: rgba(255, 255, 255, 0.1);
             --accent: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        .header { padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .chat-box { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 80%; padding: 12px; border-radius: 15px; font-size: 15px; line-height: 1.4; }
+
+        body { 
+            background-color: var(--bg); 
+            color: white; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+            width: 350px; /* Travado na largura que você pediu */
+            margin: 0 auto; /* Centraliza se a tela for maior */
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+
+        .header { 
+            padding: 12px; 
+            border-bottom: 1px solid var(--border); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            background: rgba(0,0,0,0.8);
+        }
+
+        .chat-box { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            scroll-behavior: smooth;
+        }
+
+        .msg { 
+            max-width: 85%; 
+            padding: 10px 14px; 
+            border-radius: 18px; 
+            font-size: 14px; 
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
         .ai { background: var(--glass); align-self: flex-start; border: 1px solid var(--border); }
-        .user { background: #6366f1; align-self: flex-end; }
-        .input-area { padding: 15px; background: #0a0a0c; border-top: 1px solid var(--border); }
-        .input-box { display: flex; align-items: center; background: var(--glass); border-radius: 25px; padding: 5px 15px; border: 1px solid var(--border); }
-        input { flex: 1; background: transparent; border: none; color: white; outline: none; height: 40px; }
-        .btn { background: none; border: none; color: white; cursor: pointer; padding: 5px; margin-left: 10px; font-size: 20px; }
+        .user { background: #6366f1; align-self: flex-end; color: white; }
+
+        .input-area { 
+            padding: 12px; 
+            background: #0a0a0c; 
+            border-top: 1px solid var(--border); 
+        }
+
+        .input-box { 
+            display: flex; 
+            align-items: center; 
+            background: rgba(255,255,255,0.03); 
+            border-radius: 22px; 
+            padding: 4px 12px; 
+            border: 1px solid var(--border);
+        }
+
+        input { 
+            flex: 1; 
+            background: transparent; 
+            border: none; 
+            color: white; 
+            outline: none; 
+            height: 38px; 
+            font-size: 14px;
+            min-width: 0; /* Impede o input de empurrar os botões */
+        }
+
+        .btn { 
+            background: none; 
+            border: none; 
+            color: #818cf8; 
+            cursor: pointer; 
+            padding: 6px; 
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.1s;
+        }
+
+        .btn:active { transform: scale(0.9); }
+
         .mic-active { color: #ff4b4b; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <header class="header">
-        <span style="font-weight: 600;">Nexus AI</span>
-        <span id="status" style="font-size: 10px; color: #6366f1;">PRONTO</span>
+        <span style="font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">NEXUS AI</span>
+        <span id="status" style="font-size: 9px; color: #6366f1; font-weight: bold;">ONLINE</span>
     </header>
 
     <div class="chat-box" id="chat-box">
-        <div class="msg ai">Olá! Toque no microfone para falar ou digite sua mensagem.</div>
+        <div class="msg ai">Modo 350px ativado. O layout está compacto e pronto para voz!</div>
     </div>
 
     <div class="input-area">
         <div class="input-box">
             <input type="text" id="user-input" placeholder="Mensagem..." autocomplete="off">
-            <button class="btn" id="mic-btn">🎤</button>
-            <button class="btn" id="send-btn" style="color: #6366f1;">↑</button>
+            <button class="btn" id="mic-btn" title="Falar">🎤</button>
+            <button class="btn" id="send-btn" title="Enviar">🚀</button>
         </div>
     </div>
 
@@ -53,39 +129,38 @@
         const micBtn = document.getElementById('mic-btn');
         const status = document.getElementById('status');
 
-        // --- SISTEMA DE FALA (VOICE) ---
+        // Síntese de Voz (IA Falando)
         function falar(texto) {
             const utterance = new SpeechSynthesisUtterance(texto);
             utterance.lang = 'pt-BR';
-            utterance.rate = 1.1; // Velocidade
             window.speechSynthesis.speak(utterance);
         }
 
-        // --- SISTEMA DE ESCUTA (MIC) ---
+        // Reconhecimento de Voz (IA Ouvindo)
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
             recognition.lang = 'pt-BR';
 
             micBtn.onclick = () => {
-                recognition.start();
-                micBtn.classList.add('mic-active');
-                status.innerText = "OUVINDO...";
+                try {
+                    recognition.start();
+                    micBtn.classList.add('mic-active');
+                    status.innerText = "OUVINDO...";
+                } catch(e) { console.log("Já está ouvindo"); }
             };
 
             recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                input.value = transcript;
+                input.value = event.results[0][0].transcript;
                 sendMessage();
             };
 
             recognition.onend = () => {
                 micBtn.classList.remove('mic-active');
-                status.innerText = "PRONTO";
+                status.innerText = "ONLINE";
             };
         }
 
-        // --- LÓGICA DO CHAT ---
         function addMessage(text, type) {
             const m = document.createElement('div');
             m.className = `msg ${type}`;
@@ -101,9 +176,18 @@
             addMessage(text, 'user');
             input.value = '';
 
-            // Resposta Simulada (Aqui você conectará sua API no futuro)
             setTimeout(() => {
-                let resposta = "Entendido! Eu ouvi você dizer: " + text;
+                const resposta = "Sim, mestre. Processando seu comando na largura de 350px.";
+                addMessage(resposta, 'ai');
+                falar(resposta);
+            }, 600);
+        }
+
+        sendBtn.onclick = sendMessage;
+        input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
+    </script>
+</body>
+</html>
                 
                 // Exemplo de comando simples
                 if(text.toLowerCase().includes("horas")) {
