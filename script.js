@@ -1,6 +1,5 @@
 const btn = document.getElementById('send-btn');
 const input = document.getElementById('chat-input');
-const chatBox = document.getElementById('scroll-zone');
 
 // 1. MOTOR DE BUSCA NA INTERNET (Wikipedia API)
 async function buscarNaInternet(termo) {
