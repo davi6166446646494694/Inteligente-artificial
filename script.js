@@ -267,3 +267,18 @@ else if (temQualquer(["nada", "nada não", "nada demais", "de boa", "to de boa",
 if (!categoriaEncontrada) {
     // seu código atual de "peraí mano, deixa eu pesquisar..." + wiki ou LLM genérico
         }
+
+function adicionarBolha(txt, tipo, id = null) {
+    const div = document.createElement('div');
+    div.className = `msg ${tipo}`;
+    if (id) div.id = id;
+    div.innerText = txt;
+    chatBox.appendChild(div);
+
+    // Só rola pro final se o usuário já estava quase no fundo (tolerância \~150px)
+    // Isso evita forçar scroll quando você tá lendo algo antigo
+    const isAtBottom = (chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight) < 150;
+    if (isAtBottom) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+}
