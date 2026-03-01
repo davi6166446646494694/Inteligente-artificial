@@ -1,110 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Minha IA</title>
+<title>Chat IA</title>
 <style>
-body{
-background:#0f0f0f;
-color:white;
-font-family:Arial;
-margin:0;
-display:flex;
-height:100vh;
+body {
+    background: #111;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
-.sidebar{
-width:240px;
-background:#171717;
-padding:10px;
-overflow:auto;
+
+.chat {
+    width: 400px;
+    height: 500px;
+    background: #1e1e1e;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
-.chat-item{
-background:#222;
-padding:8px;
-margin-bottom:6px;
-border-radius:6px;
-cursor:pointer;
+
+.messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    color: white;
 }
-.chat-item:hover{
-background:#333;
+
+.input-area {
+    display: flex;
+    border-top: 1px solid #333;
 }
-.main{
-flex:1;
-display:flex;
-flex-direction:column;
+
+input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+    background: #2a2a2a;
+    color: white;
 }
-.messages{
-flex:1;
-padding:15px;
-overflow:auto;
+
+button {
+    padding: 10px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
 }
-.input-area{
-display:flex;
-padding:10px;
-background:#171717;
+button:hover {
+    background: #45a049;
 }
-input{
-flex:1;
-padding:10px;
-background:#222;
-border:none;
-color:white;
-border-radius:6px;
-}
-button{
-margin-left:5px;
-padding:10px;
-background:#4da6ff;
-border:none;
-border-radius:6px;
-cursor:pointer;
-}
+.user { color: #00bfff; }
+.bot { color: #00ff88; }
 </style>
 </head>
 <body>
 
-<div class="sidebar">
-<h3>Histórico</h3>
-<div id="history"></div>
-</div>
-
-<div class="main">
-<div class="messages" id="messages"></div>
-<div class="input-area">
-<input id="input" placeholder="Pergunte algo...">
-<button onclick="send()">Enviar</button>
-</div>
+<div class="chat">
+    <div class="messages" id="messages"></div>
+    <div class="input-area">
+        <input type="text" id="input" placeholder="Digite algo...">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
 </div>
 
 <script>
-let chats=JSON.parse(localStorage.getItem("chats"))||{};
-let current=Date.now()+"";
+function botResponse(text) {
+    text = text.toLowerCase();
 
-function save(){
-localStorage.setItem("chats",JSON.stringify(chats));
+    if (text.includes("oi")) {
+        return "Olá! Como posso ajudar?";
+    } else if (text.includes("roblox")) {
+        return "Roblox é uma plataforma de jogos online.";
+    } else if (text.includes("lua")) {
+        return "Lua é uma linguagem muito usada no Roblox.";
+    } else {
+        return "Interessante... me conte mais.";
+    }
 }
 
-function renderHistory(){
-let h=document.getElementById("history");
-h.innerHTML="";
-for(let id in chats){
-let div=document.createElement("div");
-div.className="chat-item";
-div.innerText=chats[id][0]?.text||"Nova conversa";
-div.onclick=()=>load(id);
-h.appendChild(div);
-}
+function sendMessage() {
+    const input = document.getElementById("input");
+    const messages = document.getElementById("messages");
+
+    if (input.value.trim() === "") return;
+
+    messages.innerHTML += `<div class="user">Você: ${input.value}</div>`;
+    
+    const response = botResponse(input.value);
+    messages.innerHTML += `<div class="bot">IA: ${response}</div>`;
+
+    messages.scrollTop = messages.scrollHeight;
+    input.value = "";
 }
 
-function load(id){
-current=id;
-let m=document.getElementById("messages");
-m.innerHTML="";
-chats[id].forEach(msg=>{
-m.innerHTML+=`<div><b>${msg.type}:</b> ${msg.text}</div>`;
+document.getElementById("input").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") sendMessage();
 });
-}
+</script>
 
+</body>
+</html>
 function send(){
 let input=document.getElementById("input");
 if(!input.value)return;
