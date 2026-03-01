@@ -1,110 +1,127 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Minha IA</title>
-
 <style>
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #0f0f0f;
-    color: white;
-    display: flex;
-    height: 100vh;
+body{
+background:#0f0f0f;
+color:white;
+font-family:Arial;
+margin:0;
+display:flex;
+height:100vh;
 }
-
-.sidebar {
-    width: 250px;
-    background: #171717;
-    padding: 10px;
-    overflow-y: auto;
+.sidebar{
+width:240px;
+background:#171717;
+padding:10px;
+overflow:auto;
 }
-
-.sidebar h2 {
-    font-size: 16px;
+.chat-item{
+background:#222;
+padding:8px;
+margin-bottom:6px;
+border-radius:6px;
+cursor:pointer;
 }
-
-.chat-item {
-    padding: 8px;
-    background: #222;
-    margin-bottom: 5px;
-    cursor: pointer;
-    border-radius: 6px;
+.chat-item:hover{
+background:#333;
 }
-
-.chat-item:hover {
-    background: #333;
+.main{
+flex:1;
+display:flex;
+flex-direction:column;
 }
-
-.main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.messages{
+flex:1;
+padding:15px;
+overflow:auto;
 }
-
-.messages {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
+.input-area{
+display:flex;
+padding:10px;
+background:#171717;
 }
-
-.message {
-    margin-bottom: 10px;
+input{
+flex:1;
+padding:10px;
+background:#222;
+border:none;
+color:white;
+border-radius:6px;
 }
-
-.user { color: #4da6ff; }
-.bot { color: #00ff99; }
-
-.input-area {
-    display: flex;
-    padding: 10px;
-    background: #171717;
-}
-
-input {
-    flex: 1;
-    padding: 10px;
-    background: #222;
-    border: none;
-    color: white;
-    border-radius: 6px;
-}
-
-button {
-    margin-left: 5px;
-    padding: 10px;
-    background: #4da6ff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+button{
+margin-left:5px;
+padding:10px;
+background:#4da6ff;
+border:none;
+border-radius:6px;
+cursor:pointer;
 }
 </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h2>Histórico</h2>
-    <div id="history"></div>
+<h3>Histórico</h3>
+<div id="history"></div>
 </div>
 
 <div class="main">
-    <div class="messages" id="messages"></div>
-    <div class="input-area">
-        <input type="text" id="input" placeholder="Pergunte algo...">
-        <button onclick="send()">Enviar</button>
-    </div>
+<div class="messages" id="messages"></div>
+<div class="input-area">
+<input id="input" placeholder="Pergunte algo...">
+<button onclick="send()">Enviar</button>
+</div>
 </div>
 
 <script>
-let chats = JSON.parse(localStorage.getItem("chats")) || {};
-let currentChat = Date.now().toString();
+let chats=JSON.parse(localStorage.getItem("chats"))||{};
+let current=Date.now()+"";
 
-function save() {
-    localStorage.setItem("chats", JSON.stringify(chats));
+function save(){
+localStorage.setItem("chats",JSON.stringify(chats));
 }
 
+function renderHistory(){
+let h=document.getElementById("history");
+h.innerHTML="";
+for(let id in chats){
+let div=document.createElement("div");
+div.className="chat-item";
+div.innerText=chats[id][0]?.text||"Nova conversa";
+div.onclick=()=>load(id);
+h.appendChild(div);
+}
+}
+
+function load(id){
+current=id;
+let m=document.getElementById("messages");
+m.innerHTML="";
+chats[id].forEach(msg=>{
+m.innerHTML+=`<div><b>${msg.type}:</b> ${msg.text}</div>`;
+});
+}
+
+function send(){
+let input=document.getElementById("input");
+if(!input.value)return;
+if(!chats[current])chats[current]=[];
+chats[current].push({type:"Você",text:input.value});
+chats[current].push({type:"IA",text:"Resposta automática 🤖"});
+save();
+load(current);
+renderHistory();
+input.value="";
+}
+
+renderHistory();
+</script>
+
+</body>
+</html>
 function renderHistory() {
     const history = document.getElementById("history");
     history.innerHTML = "";
