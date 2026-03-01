@@ -3,33 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minha IA Chat</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Nexus AI | Future Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050507;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-hover: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.1);
+            --accent: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --text: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #1a1a2e, #050507);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Container Principal */
+        .app-shell {
+            display: flex;
+            width: 95vw;
+            height: 90vh;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(0, 0, 0, 0.2);
+            border-right: 1px solid var(--border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+        }
+
+        .logo span { color: #818cf8; }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover { background: var(--glass-hover); }
+        .nav-item.active { background: var(--glass-hover); border: 1px solid var(--border); }
+
+        /* Área do Chat */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Scrollbar Customizada */
+        .messages::-webkit-scrollbar { width: 6px; }
+        .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+        /* Bolhas de Mensagem */
+        .msg {
+            display: flex;
+            gap: 16px;
+            max-width: 80%;
+            animation: slideUp 0.4s ease forwards;
+        }
+
+        .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .bubble {
+            padding: 14px 18px;
+            border-radius: 18px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .user .bubble {
+            background: #6366f1;
+            border: none;
+            color: white;
+        }
+
+        /* Input de Texto */
+        .input-area {
+            padding: 30px 40px;
+            background: linear-gradient(to top, var(--bg), transparent);
+        }
+
+        .input-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 6px 6px 6px 20px;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #818cf8;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .send-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .send-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
-    <div class="app-container">
+
+    <div class="app-shell">
         <aside class="sidebar">
-            <button class="new-chat">+ Novo Chat</button>
-            <div class="history">
-                <p>Conversas recentes...</p>
-            </div>
+            <div class="logo">Nexus<span>AI</span></div>
+            <div class="nav-item active">✦ Novo Chat</div>
+            <div class="nav-item">◔ Histórico</div>
+            <div class="nav-item">⚙ Configurações</div>
         </aside>
 
-        <main class="chat-container">
+        <main class="chat-main">
+            <header class="chat-header">
+                <span style="font-size: 14px; color: #818cf8;">● Sistema Ativo</span>
+                <div style="background: var(--glass); padding: 4px 12px; border-radius: 20px; font-size: 12px; border: 1px solid var(--border);">v3.5 Turbo</div>
+            </header>
+
             <div class="messages" id="chat-window">
-                <div class="message ai">Olá! Como posso te ajudar hoje?</div>
+                <div class="msg">
+                    <div class="avatar">AI</div>
+                    <div class="bubble">Olá! Sou sua nova interface inteligente. Como posso ser útil hoje?</div>
+                </div>
             </div>
 
             <div class="input-area">
                 <div class="input-wrapper">
-                    <textarea id="user-input" placeholder="Digite sua mensagem..." rows="1"></textarea>
-                    <button id="send-btn">➤</button>
+                    <input type="text" id="user-input" placeholder="Digite sua mensagem aqui..." autocomplete="off">
+                    <button class="send-btn" id="send-btn">↑</button>
                 </div>
-                <span>A IA pode cometer erros. Verifique informações importantes.</span>
             </div>
         </main>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        const input = document.getElementById('user-input');
+        const btn = document.getElementById('send-btn');
+        const chatWindow = document.getElementById('chat-window');
+
+        function addMessage(text, type) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `msg ${type}`;
+            
+            const avatar = type === 'user' ? '' : '<div class="avatar">AI</div>';
+            
+            msgDiv.innerHTML = `
+                ${avatar}
+                <div class="bubble">${text}</div>
+            `;
+            
+            chatWindow.appendChild(msgDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function handleSend() {
+            if (input.value.trim() === "") return;
+            
+            addMessage(input.value, 'user');
+            const val = input.value;
+            input.value = "";
+
+            // Simulação de resposta
+            setTimeout(() => {
+                addMessage("Entendido. Estou processando sua solicitação sobre '" + val + "'...", 'ai');
+            }, 800);
+        }
+
+        btn.onclick = handleSend;
+        input.onkeypress = (e) => { if(e.key === 'Enter') handleSend(); };
+    </script>
 </body>
 </html>
-
