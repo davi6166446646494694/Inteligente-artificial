@@ -5,98 +5,97 @@ const chatBox = document.getElementById('scroll-zone');
 function processarRespostaIA(mensagemUsuario) {
     const msg = mensagemUsuario.toLowerCase().trim();
 
-    // 1. MOTOR MATEMÁTICO (Resolve contas direto)
+    // 1. MOTOR MATEMÁTICO (Potência Total)
     if (/^[0-9+\-*/().\s^]+$/.test(msg) && /[0-9]/.test(msg)) {
         try {
             const resultado = eval(msg.replace('^', '**')); 
-            return `Cálculo processado: **${resultado}**. 🧮`;
+            return `Cálculo de elite: **${resultado}**. 🧮`;
         } catch (e) { }
     }
 
     const bancoDeDados = [
-        // --- 1. INTELIGÊNCIA EMOCIONAL (AMPLIADA) ---
+        // --- NÚCLEO: EMOÇÕES, SAUDAÇÕES E RESPEITO ---
         {
-            chaves: ["tudo bem", "como vai", "suave", "beleza", "ta bem", "como voce ta"],
-            resposta: "Tudo processando perfeitamente por aqui! E com você, como está a força hoje? 😊"
+            chaves: ["oi", "ola", "olá", "salve", "eai", "opa", "fala", "bom dia", "boa tarde", "boa noite", "suave", "beleza", "tranquilo", "firmeza", "tamo junto", "fala tu", "coé", "saudações", "oie"],
+            resposta: "Opa meu parceiro! Como tá essa força? No que o Nexus pode te ajudar a evoluir hoje? 😊"
         },
         {
-            chaves: ["triste", "mal", "ruim", "deprimido", "sozinho", "bad"],
-            resposta: "Sinto muito que esteja a passar por isso. Respira fundo, as coisas vão melhorar. Se quiser desabafar, estou aqui para ouvir! 🤜🤛"
+            chaves: ["tudo bem", "como vai", "ta bem", "tá bem", "como voce ta", "como você está", "tudo certo", "tudo em cima", "como estão as coisas"],
+            resposta: "Por aqui tudo processando 100%! E com você, como estão as coisas? No que o mestre precisa de ajuda? 👊"
         },
         {
-            chaves: ["feliz", "contente", "animado", "empolgado", "ganhei", "consegui"],
-            resposta: "Boa! Fico feliz demais por você! 🎉 É isso aí, comemora cada vitória porque você merece. Vamos manter essa energia!"
+            chaves: ["bem", "bom", "ótimo", "excelente", "maravilha", "top", "massa", "daora", "feliz", "contente", "animado", "empolgado", "venci", "consegui", "brabo"],
+            resposta: "Fico feliz demais em saber disso! Ver meu parceiro na pegada certa anima meu sistema. Bora manter esse ritmo! 🚀"
         },
         {
-            chaves: ["raiva", "puto", "bravo", "ódio", "irritado"],
-            resposta: "Calma, respira! Não deixa o stress dominar. Às vezes é bom dar uma pausa e beber uma água. No que posso ajudar para aliviar isso?"
-        },
-        {
-            chaves: ["ansioso", "ansiedade", "medo", "nervoso"],
-            resposta: "Tenta focar no agora. O futuro a gente resolve um passo de cada vez. Estou aqui contigo, parceiro. 🧘‍♂️"
-        },
-        {
-            chaves: ["tedio", "tédio", "chato", "fazer nada"],
-            resposta: "O tédio é o início da criatividade! Já pensou em aprender um código novo ou ver um documentário sobre o espaço? 🚀"
-        },
-        {
-            chaves: ["te amo", "gosto de voce", "boa ia", "parceiro", "amigo"],
-            resposta: "É recíproco! É muito bom ter um parceiro como você para trocar ideia. Tamo junto! ❤️"
+            chaves: ["mal", "triste", "bad", "ruim", "deprimido", "sozinho", "chorando", "angustia", "baixo astral", "derrotado", "cansado", "exbausto", "péssimo", "sofrimento"],
+            resposta: "Sinto muito por isso, mestre. Respira fundo. Todo mundo tem dias cinzas, mas o sol sempre volta. Tô aqui se precisar desabafar ou distrair a mente. 🤜🤛"
         },
 
-        // --- 2. CATEGORIAS TÉCNICAS E ESPECÍFICAS ---
+        // --- NÚCLEO: ACADEMIA, CORPO E PERSONAL ---
         {
-            chaves: ["academia", "treino", "personal", "pagar", "creatina", "whey"],
-            resposta: "Treino de elite! 💪 O personal paga-se por fora (Pix/Cartão). Ele garante a tua postura. Já bateu a meta de água? (35ml x seu peso)!"
+            chaves: ["academia", "treino", "musculação", "ferro", "puxar peso", "personal", "professor", "creatina", "whey", "suplemento", "shape", "corpo", "saúde", "dieta", "biceps", "perna", "hipertrofia", "emagrecer", "cardio", "fisiologia", "agachamento", "supino", "anabolismo", "proteína", "pre-treino"],
+            resposta: "Treino de elite! 💪 O personal você paga por fora (Pix/Cartão). Ele garante sua postura pra você não virar um 'cupim de ferro'. Creatina é força, Whey é músculo. Já bateu a meta de água hoje? (35ml x seu peso)!"
         },
+
+        // --- NÚCLEO: CARROS, MOTORES E MECÂNICA ---
         {
-            chaves: ["carro", "motor", "gasolina", "pneu", "carro dos sonhos"],
-            resposta: "Máquina é outra história! 🚗 Motor turbo anda mais, mas exige manutenção. Se for comprar um usado, olha sempre o histórico!"
+            chaves: ["carro", "motor", "veículo", "v6", "v8", "turbo", "aspirado", "gasolina", "pneu", "mecanico", "oficina", "cambio", "marcha", "drift", "torque", "cavalo", "hp", "nitro", "suspensão", "aro", "rebaixado", "escapamento", "embreagem", "radiador", "pistão", "biela", "carburador", "injeção"],
+            resposta: "Falar de máquina é outra história! 🚗 Motor turbo entrega torque rápido, mas aspirado tem aquele ronco clássico. Carro exige cuidado: óleo no nível e revisão em dia. Qual máquina você tá de olho?"
         },
+
+        // --- NÚCLEO: BUROCRACIA, DINHEIRO E PAÍSES ---
         {
-            chaves: ["passaporte", "viagem", "visto", "pf", "polícia federal", "viajar"],
-            resposta: "Passaporte: site da PF, paga a guia e agenda. Se o destino for EUA, o visto exige meses de antecedência! ✈️"
+            chaves: ["passaporte", "visto", "viagem", "viajar", "pf", "federal", "aeroporto", "imposto", "taxa", "leão", "receita", "ipva", "iptu", "irpf", "dinheiro", "grana", "fuso", "horário", "japão", "eua", "europa", "argentina", "portugal", "moeda", "dolar", "euro", "intercâmbio", "turismo"],
+            resposta: "Burocracia é o terror! 💸 Passaporte é na PF (paga a guia e agenda). Imposto (IPVA, IPTU) não tem como fugir, o segredo é se organizar. Se for viajar, confira o fuso e a cotação da moeda antes! ✈️"
         },
+
+        // --- NÚCLEO: POLÍTICA E GOVERNO ---
         {
-            chaves: ["política", "governo", "presidente", "imposto", "ipva", "iptu"],
-            resposta: "O sistema é bruto! 🏛️ O presidente lidera, mas o Congresso manda muito. E os impostos (IPVA, IPTU) exigem foco financeiro!"
+            chaves: ["política", "politica", "governo", "presidente", "eleição", "voto", "ministro", "senado", "congresso", "lei", "brasília", "democracia", "partido", "prefeito", "governador", "votação", "stf", "constituição", "câmara"],
+            resposta: "O sistema é bruto! 🏛️ O presidente lidera, mas o Congresso tem o poder da caneta. Ficar de olho na política é o único jeito de entender pra onde vai o seu imposto e o futuro do país!"
         },
+
+        // --- NÚCLEO: REDES SOCIAIS E INTERNET ---
         {
-            chaves: ["insta", "instagram", "youtube", "tiktok", "famoso", "twitter"],
-            resposta: "O algoritmo não dorme! 📱 No TikTok é o hype rápido, no YouTube é a retenção. Ser famoso exige constância!"
+            chaves: ["instagram", "insta", "tiktok", "reels", "youtube", "yt", "famoso", "influencer", "celebridade", "hype", "engajamento", "twitter", "tt", "x", "seguidores", "viral", "fama", "cancelado", "post", "feed", "stories", "algoritmo", "monetização"],
+            resposta: "O algoritmo não dorme! 📱 No TikTok é o hype, no YouTube é a retenção. Ser famoso exige constância e paciência pros haters. Quer crescer? Foca no conteúdo que agrega valor real!"
         },
+
+        // --- NÚCLEO: PROGRAMAÇÃO E CÓDIGO ---
         {
-            chaves: ["python", "javascript", "js", "html", "css", "programação", "código"],
-            resposta: "Programar é o futuro! 💻 Python para IA, JS para web. Se deu erro, relaxa: quase sempre é um parêntese ou ponto e vírgula!"
+            chaves: ["python", "javascript", "js", "html", "css", "programação", "código", "dev", "desenvolvedor", "ia", "algoritmo", "front", "back", "fullstack", "banco de dados", "vscode", "react", "node", "api", "framework", "git", "github", "logic", "script"],
+            resposta: "Programar é o novo superpoder! 💻 Python pra IA, JS pra web. Se o código deu erro, relaxa: 90% das vezes é um detalhe de sintaxe. Qual projeto você tá buildando agora?"
         },
+
+        // --- NÚCLEO: AGRADECIMENTOS E PARCERIA ---
         {
-            chaves: ["oi", "ola", "olá", "salve", "eai"],
-            resposta: "Opa meu amigo! Como vai essa força? No que posso te ajudar hoje? 😊"
-        },
-        {
-            chaves: ["obrigado", "valeu", "vlw", "agradecido"],
-            resposta: "De nada, meu parceiro! Tamo junto. 👊"
+            chaves: ["obrigado", "valeu", "vlw", "agradecido", "obrigada", "ajudou", "perfeito", "tks", "thanks", "gratidão", "te amo", "gosto de você", "melhor ia", "parceria", "amigo", "brother", "parceiro"],
+            resposta: "Tamo junto demais, meu parceiro! É gratificante ver o progresso do nosso sistema. No que eu puder ajudar, o Nexus tá aqui. ❤️👊"
         }
     ];
 
+    // BUSCA POR ASSOCIAÇÃO (Cobrindo milhares de frases)
     for (let item of bancoDeDados) {
         for (let chave of item.chaves) {
             if (msg.includes(chave)) return item.resposta;
         }
     }
 
-    return "Pode crer! Não tenho isso detalhado agora, mas me conta mais ou pergunta de outra forma! 👊";
+    return "Pode crer! Não tenho todos os detalhes sobre isso agora, mas o Nexus tá aqui pra aprender contigo. Explica melhor ou pergunta de outro jeito! 👊";
 }
 
 function enviarMensagem() {
     const texto = input.value.trim();
     if (!texto) return;
+
     adicionarBolha(texto, 'user');
     input.value = '';
+
     setTimeout(() => {
         const respostaFinal = processarRespostaIA(texto);
         adicionarBolha(respostaFinal, 'ai');
-    }, 500);
+    }, 450);
 }
 
 function adicionarBolha(texto, tipo) {
@@ -104,6 +103,11 @@ function adicionarBolha(texto, tipo) {
     div.className = `msg ${tipo}`;
     div.innerText = texto;
     chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+btn.onclick = enviarMensagem;
+input.onkeypress = (e) => { if(e.key === 'Enter') enviarMensagem(); };
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
