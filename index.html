@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nexus AI | Premium</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -17,37 +17,117 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: white; height: 100vh; overflow: hidden; }
 
-        .viewport { display: flex; width: 130vw; height: 100vh; transition: 0.4s ease; transform: translateX(-30vw); }
+        /* Estrutura de Viewport */
+        .viewport { 
+            display: flex; 
+            width: 130vw; 
+            height: 100vh; 
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
+            transform: translateX(-30vw); 
+        }
         .viewport.menu-open { transform: translateX(0); }
 
         /* Sidebar com histórico */
-        .sidebar { width: 30vw; background: var(--sidebar); border-right: 1px solid var(--border); padding: 30px 20px; }
-        .history-title { font-size: 11px; color: #555; letter-spacing: 2px; margin-bottom: 20px; }
-        .history-item { padding: 12px; background: var(--glass); border-radius: 8px; font-size: 13px; color: #aaa; margin-bottom: 8px; border: 1px solid var(--border); }
-
-        /* Chat */
-        .chat-area { width: 100vw; height: 100vh; display: flex; flex-direction: column; background: radial-gradient(circle at top right, #0f0f2d, #020205); }
-        .header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        
-        #scroll-zone { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 20px; }
-        
-        .msg { max-width: 75%; padding: 14px 18px; border-radius: 20px; font-size: 15px; animation: pop 0.3s ease; }
-        .ai { background: var(--glass); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .user { background: var(--accent); align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
-
-        .footer { padding: 25px; }
-        .input-group { 
-            max-width: 800px; margin: 0 auto; background: var(--glass); 
-            border: 1px solid var(--border); border-radius: 16px; padding: 8px 15px; display: flex; align-items: center; 
+        .sidebar { 
+            width: 30vw; 
+            background: var(--sidebar); 
+            border-right: 1px solid var(--border); 
+            padding: 30px 20px; 
+            display: flex;
+            flex-direction: column;
         }
-        input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 16px; }
-        .send-btn { background: white; color: black; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+        .history-title { font-size: 11px; color: #555; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
+        #history-box { flex: 1; overflow-y: auto; }
+        .history-item { 
+            padding: 12px; 
+            background: var(--glass); 
+            border-radius: 8px; 
+            font-size: 13px; 
+            color: #aaa; 
+            margin-bottom: 8px; 
+            border: 1px solid var(--border);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Área do Chat */
+        .chat-area { 
+            width: 100vw; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            background: radial-gradient(circle at top right, #0f0f2d, #020205); 
+        }
+        .header { 
+            padding: 15px 20px; 
+            border-bottom: 1px solid var(--border); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            background: rgba(2, 2, 5, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        
+        #scroll-zone { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            scroll-behavior: smooth;
+        }
+        
+        /* Balões de Mensagem */
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.4; animation: pop 0.3s ease; }
+        .ai { background: var(--glass); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; color: #e0e0e0; }
+        .user { background: var(--accent); align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); color: white; }
+
+        /* Rodapé de Entrada */
+        .footer { padding: 20px; background: rgba(2, 2, 5, 0.9); }
+        .input-group { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid var(--border); 
+            border-radius: 25px; 
+            padding: 5px 5px 5px 15px; 
+            display: flex; 
+            align-items: center; 
+        }
+        input { 
+            flex: 1; 
+            background: transparent; 
+            border: none; 
+            color: white; 
+            outline: none; 
+            font-size: 16px; 
+            height: 40px;
+        }
+        .send-btn { 
+            background: white; 
+            color: black; 
+            border: none; 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            font-weight: bold; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
 
         @keyframes pop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Ajustes Mobile */
         @media (max-width: 600px) {
             .viewport { width: 180vw; transform: translateX(-80vw); }
             .sidebar { width: 80vw; }
+            .chat-area { width: 100vw; }
         }
     </style>
 </head>
@@ -55,36 +135,105 @@
 
     <div class="viewport" id="viewport">
         <aside class="sidebar">
-            <h2 class="history-title">LOGS DE MEMÓRIA</h2>
+            <h2 class="history-title">Histórico de Mensagens</h2>
             <div id="history-box">
                 </div>
         </aside>
 
         <main class="chat-area">
             <header class="header">
-                <button id="menu-toggle" style="background:none; border:none; color:white; font-size: 20px; cursor:pointer;">☰</button>
+                <button id="menu-toggle" style="background:none; border:none; color:#818cf8; font-size: 24px; cursor:pointer;">☰</button>
                 <div style="font-weight: 600; letter-spacing: 1px;">NEXUS AI</div>
-                <div style="width: 20px;"></div>
+                <div style="width: 30px;"></div>
             </header>
 
-            <div id="scroll-zone"></div>
+            <div id="scroll-zone">
+                <div class="msg ai">Olá! Sou a Nexus AI. Digite algo abaixo para começarmos.</div>
+            </div>
 
             <footer class="footer">
                 <div class="input-group">
-                    <input type="text" id="chat-input" placeholder="Escreva um comando..." autocomplete="off">
+                    <input type="text" id="chat-input" placeholder="Envie uma mensagem..." autocomplete="off">
                     <button class="send-btn" id="send-btn">↑</button>
                 </div>
             </footer>
         </main>
     </div>
 
-    <script src="respostas.js"></script>
-    <script src="interface.js"></script>
     <script>
-        // Lógica do menu lateral
-        document.getElementById('menu-toggle').onclick = () => {
-            document.getElementById('viewport').classList.toggle('menu-open');
+        // --- SELETORES ---
+        const viewport = document.getElementById('viewport');
+        const scrollZone = document.getElementById('scroll-zone');
+        const input = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const menuBtn = document.getElementById('menu-toggle');
+        const historyBox = document.getElementById('history-box');
+
+        // --- BANCO DE RESPOSTAS ---
+        const bancoIA = {
+            oi: ["Olá! Como posso ajudar?", "Oi! Tudo bem por aqui.", "Saudações, humano!"],
+            ajuda: ["Eu posso conversar, contar as horas ou guardar seu histórico."],
+            padrao: ["Entendi! Estou processando essa informação.", "Interessante, me conte mais."]
         };
+
+        // --- FUNÇÕES ---
+
+        // Abrir/Fechar Menu
+        menuBtn.onclick = () => viewport.classList.toggle('menu-open');
+
+        // Adicionar mensagem na tela
+        function addMessage(text, type) {
+            const div = document.createElement('div');
+            div.className = `msg ${type}`;
+            div.innerText = text;
+            scrollZone.appendChild(div);
+            
+            // Scroll automático
+            scrollZone.scrollTop = scrollZone.scrollHeight;
+        }
+
+        // Adicionar ao Histórico Lateral
+        function addToHistory(text) {
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.innerText = text;
+            historyBox.prepend(item);
+        }
+
+        // Sistema de Envio
+        function performSend() {
+            const text = input.value.trim();
+            if (!text) return;
+
+            // 1. Mostra a mensagem do usuário
+            addMessage(text, 'user');
+            
+            // 2. Adiciona ao histórico lateral
+            addToHistory(text);
+            
+            // 3. Limpa o input
+            input.value = '';
+
+            // 4. Resposta da IA (Simulação)
+            setTimeout(() => {
+                let r;
+                const m = text.toLowerCase();
+                if (m.includes("oi") || m.includes("olá")) r = bancoIA.oi[Math.floor(Math.random()*bancoIA.oi.length)];
+                else if (m.includes("ajuda")) r = bancoIA.ajuda[0];
+                else r = bancoIA.padrao[Math.floor(Math.random()*bancoIA.padrao.length)];
+
+                addMessage(r, 'ai');
+
+                // Opcional: Faz a IA falar (comente se não quiser voz)
+                const voz = new SpeechSynthesisUtterance(r);
+                voz.lang = 'pt-BR';
+                window.speechSynthesis.speak(voz);
+            }, 600);
+        }
+
+        // Eventos
+        sendBtn.onclick = performSend;
+        input.onkeypress = (e) => { if (e.key === 'Enter') performSend(); };
     </script>
 </body>
 </html>
