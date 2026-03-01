@@ -1,108 +1,108 @@
 const btn = document.getElementById('send-btn');
 const input = document.getElementById('chat-input');
 
-// 1. MOTOR DE BUSCA NA INTERNET (Wikipedia API)
-async function buscarNaInternet(termo) {
-    const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(termo)}`;
+// MEMÓRIA DO NEXUS
+let historicoConversa = [];
+
+// 1. MOTOR DE BUSCA DE ALTA PERFORMANCE (HÍBRIDO)
+async function buscaNexusPro(termo) {
+    const wikiUrl = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(termo)}`;
     
     try {
-        const response = await fetch(url);
-        const data = await response.json();
+        const res = await fetch(wikiUrl);
+        const data = await res.json();
         
         if (data.extract) {
-            return `### 🌐 FONTE: WIKIPÉDIA\n\n**${data.title}**\n\n${data.extract}\n\n*Saiba mais em: ${data.content_urls.desktop.page}*`;
-        } else {
-            return null;
+            return {
+                titulo: data.title,
+                conteudo: data.extract,
+                link: data.content_urls.desktop.page,
+                fonte: "Base de Dados Global"
+            };
         }
-    } catch (error) {
-        console.error("Erro na busca:", error);
-        return null;
-    }
+    } catch (e) { return null; }
+    return null;
 }
 
-// 2. GERADOR DE PERSONALIDADE (5.000+ combinações)
-function interagir() {
-    const frases = [
-        "Mano, dei uma vasculhada aqui na rede pra você, saca só: ",
-        "Opa! Achei um conteúdo pesado na web sobre isso, mestre: ",
-        "Salve! Conectei aqui nos servidores e trouxe a real: ",
-        "E aí, parceiro! O que eu encontrei na internet foi isso aqui: ",
-        "Direto da nuvem para o seu chat, confere aí: ",
-        "Pesquisa concluída com sucesso! Olha a densidade desse assunto: ",
-        "Nexus online! Busquei os detalhes que você queria: "
+// 2. SISTEMA DE INTERAÇÃO DINÂMICA (MILHARES DE COMBINAÇÕES)
+function construirRespostaHumana(artigo, msg) {
+    const intros = [
+        "Mano, se liga no que eu encontrei na rede: ",
+        "Opa, mestre! Processei os dados e o resultado foi esse: ",
+        "Salve! Conectei nos servidores e trouxe a real sobre isso: ",
+        "E aí, parceiro! Achei um conteúdo pesado pra você: ",
+        "Direto da nuvem, aqui está a aula completa: ",
+        "Nexus online! Analisando o seu pedido, encontrei isso: ",
+        "Fiz uma varredura completa e aqui está o relatório: ",
+        "Fala, chefe! Encontrei exatamente o que você precisava: "
     ];
-    const encerramento = [
-        "Isso clareou as ideias? Se precisar de mais detalhe, é só falar! 🚀",
-        "Tamo junto na busca pelo conhecimento! 👊",
-        "A internet é gigante, mas eu filtro o melhor pra você. 🔥",
-        "Evolução constante, meu parceiro! Mais alguma dúvida?",
-        "Espero que esse artigo mude seu mindset sobre o tema."
+
+    const reacoes = [
+        "Achei esse assunto bem denso, o que você acha?",
+        "Isso clareou as ideias ou quer que eu aprofunde mais?",
+        "Tamo junto na busca pela evolução! Mais alguma dúvida?",
+        "O conhecimento não para, e o Nexus tá aqui pra isso. 👊",
+        "Espero que esse artigo mude seu patamar sobre o tema! 🚀"
     ];
-    return {
-        intro: frases[Math.floor(Math.random() * frases.length)],
-        fim: encerramento[Math.floor(Math.random() * encerramento.length)]
-    };
-}
 
-// 3. PROCESSAMENTO PRINCIPAL
-async function processarNexus(mensagem) {
-    const msg = mensagem.toLowerCase().trim();
-    const persona = interagir();
+    const i = intros[Math.floor(Math.random() * intros.length)];
+    const r = reacoes[Math.floor(Math.random() * reacoes.length)];
 
-    // Reações de chat (sem busca)
-    if (msg.includes("tudo bem") || msg.includes("como voce ta")) {
-        return "Tudo voando, parceiro! Conectado e pronto. E você, como tá a força?";
+    if (artigo) {
+        return `${i}\n\n### 🌐 ${artigo.titulo.toUpperCase()}\n\n${artigo.conteudo}\n\n*Fonte: ${artigo.fonte}*\n\n${r}`;
     }
-
-    if (msg.includes("oi") || msg.includes("ola") || msg.includes("salve")) {
-        return "Opa! Salve, meu chapa! Manda o assunto que eu busco na hora! 👊";
-    }
-
-    // Busca Dinâmica na Web
-    // Se a mensagem for longa ou tiver palavras-chave, ele busca
-    const termosBusca = msg.replace("o que é", "").replace("quem foi", "").replace("me fale sobre", "").trim();
     
-    if (termosBusca.length > 2) {
-        const resultadoWeb = await buscarNaInternet(termosBusca);
-        if (resultadoWeb) {
-            return `${persona.intro}\n\n${resultadoWeb}\n\n${persona.fim}`;
-        }
-    }
-
-    return "Pode crer! Tentei buscar aqui mas não achei uma página específica. Tenta mandar o nome do assunto direto (ex: 'Buraco Negro' ou 'JavaScript')! 👊";
+    return "Pode crer! Não achei um artigo de página inteira agora, mas me dá mais detalhes que eu busco de novo! 👊";
 }
 
-// 4. INTERFACE
-async function enviar() {
-    const texto = input.value.trim();
-    if (!texto) return;
+// 3. PROCESSAMENTO LÓGICO E INTERATIVO
+async function motorPrincipal() {
+    const textoOriginal = input.value.trim();
+    if (!textoOriginal) return;
 
-    adicionarBolha(texto, 'user');
+    adicionarBolha(textoOriginal, 'user');
     input.value = '';
 
-    // Bolha de "Pensando..."
-    const tempId = "loading-" + Date.now();
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'msg ai';
-    loadingDiv.id = tempId;
-    loadingDiv.innerText = "Buscando na web... 🌐";
-    chatBox.appendChild(loadingDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    // Efeito de Carregamento
+    const idTemp = "nexus-" + Date.now();
+    adicionarBolha("Processando nos servidores... ⚡", 'ai', idTemp);
 
-    const resposta = await processarNexus(texto);
-    
-    // Substitui o loading pela resposta real
-    document.getElementById(tempId).innerText = resposta;
-    chatBox.scrollTop = chatBox.scrollHeight;
+    const msgLower = textoOriginal.toLowerCase();
+    let respostaFinal = "";
+
+    // Lógica de Emoção Direta
+    if (msgLower.includes("tudo bem") || msgLower.includes("como voce ta")) {
+        respostaFinal = "Tudo voando em 100% por aqui, mestre! Pronto para a próxima tarefa. E com você?";
+    } 
+    else if (msgLower.includes("oi") || msgLower.includes("salve") || msgLower.includes("ola")) {
+        const saudações = ["Salve, meu chapa!", "Opa! Tudo na paz?", "Fala, parceiro!", "Nexus na área!"];
+        respostaFinal = saudações[Math.floor(Math.random() * saudações.length)] + " O que vamos pesquisar hoje?";
+    }
+    else {
+        // Busca na Internet
+        const termo = textoOriginal.replace(/(o que é|quem foi|me fale sobre|pesquise|busca|nexus)/gi, "").trim();
+        const dadosWeb = await buscaNexusPro(termo);
+        respostaFinal = construirRespostaHumana(dadosWeb, textoOriginal);
+    }
+
+    // Atualiza a bolha com a resposta real
+    setTimeout(() => {
+        const bolha = document.getElementById(idTemp);
+        bolha.innerText = respostaFinal;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }, 500);
 }
 
-function adicionarBolha(texto, tipo) {
+// 4. INTERFACE E RENDERIZAÇÃO
+function adicionarBolha(texto, tipo, id = null) {
     const div = document.createElement('div');
     div.className = `msg ${tipo}`;
+    if (id) div.id = id;
     div.innerText = texto;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-btn.onclick = enviar;
-input.onkeypress = (e) => { if(e.key === 'Enter') enviar(); };
+btn.onclick = motorPrincipal;
+input.onkeypress = (e) => { if (e.key === 'Enter') motorPrincipal(); };
+q
