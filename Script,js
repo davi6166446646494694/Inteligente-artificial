@@ -1,13 +1,39 @@
-function processarMensagem(mensagemUsuario) {
-    // 1. LISTA NEGRA (O que a IA deve ignorar totalmente)
-    const frasesDeSistema = [
-        "recebi!",
-        "scroll automático",
-        "garantiu que você visse",
-        "mensagem do sistema"
-    ];
+const nexusBrain = {
+    conhecimento: {
+        // --- SOCIAL ---
+        "oi": "Olá! Sistema Nexus operando. Como posso ajudar?",
+        "tudo bem": "Por aqui os circuitos estão 100%! E com você?",
+        "nome": "Meu nome é Nexus AI, sua interface de assistência avançada.",
+        
+        // --- GAMES & TECH ---
+        "melhor jogo": "Isso depende do seu gosto! Mas títulos como Elden Ring, GTA V e Minecraft mudaram a história dos games.",
+        "pc ou console": "PC oferece mais potência e mods, mas Consoles são práticos e têm exclusivos incríveis. Qual você prefere?",
+        "python": "Python é uma das linguagens mais amadas para IA e automação. Quer aprender?",
+        "javascript": "É a linguagem que me faz funcionar aqui no seu navegador!",
 
-    // Verifica se a mensagem contém QUALQUER uma das frases proibidas
-    const ehMensagemInvalida = frasesDeSistema.some(frase => 
-        mensagemUsuario.toLowerCase().includes(frase)
-    );
+        // --- UTILITÁRIOS ---
+        "horas": () => `Agora são exatamente ${new Date().toLocaleTimeString('pt-BR')}`,
+        "data": () => `Hoje é ${new Date().toLocaleDateString('pt-BR')}`,
+        "calculadora": "Ainda não sou uma calculadora completa, mas posso tentar! O que quer somar?",
+
+        // --- CURIOSIDADES ---
+        "universo": "O universo tem cerca de 13,8 bilhões de anos. Somos poeira de estrelas!",
+        "maior país": "A Rússia é o maior país do mundo em território."
+    },
+
+    processar(texto) {
+        const msg = texto.toLowerCase().trim();
+        
+        // Procura correspondência
+        for (let chave in this.conhecimento) {
+            if (msg.includes(chave)) {
+                return typeof this.conhecimento[chave] === 'function' 
+                       ? this.conhecimento[chave]() 
+                       : this.conhecimento[chave];
+            }
+        }
+
+        // Resposta de "Busca Falha" (Simula que está procurando)
+        return "Interessante... Minha base de dados local não tem uma resposta exata para isso, mas vou arquivar essa pergunta para minha próxima atualização!";
+    }
+};
