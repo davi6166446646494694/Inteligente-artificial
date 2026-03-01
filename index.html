@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus AI - Interface</title>
+    <title>Nexus AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -23,35 +23,29 @@
             overflow: hidden;
         }
 
-        /* Estrutura de Viewport para o Menu Lateral */
         .viewport {
             display: flex;
-            width: 130vw; /* 30vw do menu + 100vw do chat */
+            width: 130vw;
             height: 100vh;
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            transform: translateX(-30vw); /* Começa com menu escondido */
+            transform: translateX(-30vw);
         }
 
         .viewport.menu-open { transform: translateX(0); }
 
-        /* Barra Lateral (Histórico) */
         .sidebar {
             width: 30vw;
             height: 100%;
             background: var(--sidebar-bg);
             border-right: 1px solid var(--border);
             padding: 20px;
-            display: flex;
-            flex-direction: column;
         }
 
-        /* Área Principal do Chat */
         .chat-area {
             width: 100vw;
             height: 100%;
             display: flex;
             flex-direction: column;
-            background: var(--bg);
         }
 
         .header {
@@ -63,7 +57,6 @@
             justify-content: space-between;
         }
 
-        /* Zona de Mensagens (Vazia) */
         #scroll-zone {
             flex: 1;
             overflow-y: auto;
@@ -71,39 +64,138 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            scroll-behavior: smooth;
         }
 
-        /* Estilo base das mensagens (para quando você as criar via JS) */
+        /* Estilo das Mensagens */
         .msg {
-            max-width: 85%;
+            max-width: 80%;
             padding: 12px 18px;
-            border-radius: 18px;
+            border-radius: 20px;
             font-size: 15px;
             line-height: 1.5;
+            animation: pop 0.2s ease-out;
+            word-wrap: break-word;
         }
-        .ai { background: var(--glass); border: 1px solid var(--border); align-self: flex-start; }
-        .user { background: #6366f1; align-self: flex-end; }
 
-        /* Rodapé / Input */
+        .user { 
+            background: #6366f1; 
+            align-self: flex-end; 
+            border-bottom-right-radius: 4px;
+        }
+
         .footer {
-            padding: 15px 20px;
+            padding: 15px;
             background: #0a0a0c;
             border-top: 1px solid var(--border);
         }
 
         .input-group {
             display: flex;
-            align-items: center;
             background: rgba(255,255,255,0.05);
             border: 1px solid var(--border);
             border-radius: 25px;
             padding: 5px 5px 5px 15px;
+            align-items: center;
         }
 
         input {
             flex: 1;
             background: transparent;
             border: none;
+            color: white;
+            outline: none;
+            font-size: 16px;
+            height: 40px;
+        }
+
+        .send-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes pop { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        @media (max-width: 600px) {
+            .viewport { width: 180vw; transform: translateX(-80vw); }
+            .sidebar { width: 80vw; }
+            .chat-area { width: 100vw; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="viewport" id="viewport">
+        <aside class="sidebar">
+            <h2 style="font-size: 12px; color: #444; margin-bottom: 20px;">HISTÓRICO</h2>
+            <div style="padding: 12px; background: var(--glass); border-radius: 10px; font-size: 13px; color: #888;">Nenhuma conversa recente</div>
+        </aside>
+
+        <main class="chat-area">
+            <header class="header">
+                <button id="menu-toggle" style="background:none; border:none; color:#818cf8; font-size: 20px; cursor:pointer;">☰</button>
+                <div style="font-weight: 600;">Nexus AI</div>
+                <div style="width: 20px;"></div>
+            </header>
+
+            <div id="scroll-zone">
+                </div>
+
+            <footer class="footer">
+                <div class="input-group">
+                    <input type="text" id="chat-input" placeholder="Digite sua mensagem..." autocomplete="off">
+                    <button class="send-btn" id="send-btn">↑</button>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        const viewport = document.getElementById('viewport');
+        const scrollZone = document.getElementById('scroll-zone');
+        const input = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const menuBtn = document.getElementById('menu-toggle');
+
+        // Abre/Fecha Menu
+        menuBtn.onclick = () => viewport.classList.toggle('menu-open');
+
+        // Função de Enviar (Apenas exibe na tela)
+        function sendMessage() {
+            const text = input.value.trim();
+            if(!text) return;
+
+            // Cria o elemento da mensagem do usuário
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg user';
+            msgDiv.innerText = text;
+            
+            // Adiciona ao chat
+            scrollZone.appendChild(msgDiv);
+            
+            // Limpa o campo e desce o scroll
+            input.value = '';
+            scrollZone.scrollTop = scrollZone.scrollHeight;
+            
+            // Fecha o menu se estiver aberto no mobile
+            viewport.classList.remove('menu-open');
+        }
+
+        // Eventos de clique e teclado
+        sendBtn.onclick = sendMessage;
+        input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
+    </script>
+</body>
+</html>
             color: white;
             outline: none;
             font-size: 16px;
