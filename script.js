@@ -2,65 +2,70 @@ const btn = document.getElementById('send-btn');
 const input = document.getElementById('chat-input');
 const chatBox = document.getElementById('scroll-zone');
 
-// 1. BASE DE DADOS INTERNA (Caso a internet falhe, ele não fica mudo)
-const backupNexus = {
-    "programacao": "A programação é a arte de instruir máquinas. Envolve lógica, algoritmos e linguagens como JS e Python...",
-    "academia": "Treino físico envolve biologia e consistência. O descanso e a dieta são tão importantes quanto o levantamento de peso.",
-    "politica": "A política é a organização social e o exercício do poder dentro de um Estado ou nação."
-};
+// 1. MOTOR DE BUSCA INTELIGENTE (Ignora palavras de negação ou gírias soltas)
+async function buscarNaWeb(termo) {
+    const ignorar = ["não", "nao", "nada", "nem", "pare", "parar", "imbecil", "burro", "cala a boca"];
+    if (ignorar.includes(termo.toLowerCase()) || termo.length < 3) return null;
 
-// 2. BUSCA NA WEB (WIKIPEDIA) COM TRATAMENTO DE ERRO
-async function buscarWeb(termo) {
+    const buscaLimpa = termo.replace(/(o que é|quem foi|me fale sobre|pesquise|busca|nexus)/gi, "").trim();
+    const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(buscaLimpa)}`;
+    
     try {
-        const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(termo)}`;
-        const response = await fetch(url, { method: 'GET' });
+        const response = await fetch(url);
         if (!response.ok) return null;
         const data = await response.json();
         return data.extract ? { t: data.title, d: data.extract } : null;
-    } catch (e) {
-        return null; // Se a internet cair, retorna null e não trava
-    }
+    } catch (e) { return null; }
 }
 
-// 3. MOTOR DE INTERAÇÃO (5.000+ formas de falar)
-function interacaoHumana() {
-    const intros = ["Mano, olha o que eu pesquisei: ", "Opa, mestre! Se liga nessa aula: ", "Salve! O Nexus trouxe a real: ", "Conectei aqui e achei isso: "];
-    const frases = ["Espero que ajude! 🚀", "Tamo junto na evolução. 👊", "Dúvidas? É só mandar!", "Foco no progresso! 🔥"];
+// 2. GERADOR DE PERSONALIDADE (Interação Humana Infinita)
+function gerarTalk() {
+    const saudações = ["Fala, meu parceiro!", "Opa, mestre!", "Salve, campeão!", "E aí, tudo na paz?", "Nexus na área!", "Diz aí, chapa!"];
+    const intros = ["Se liga no que eu encontrei: ", "Achei essa aula pra você: ", "Conectei aqui e trouxe a real: ", "Dá uma olhada nesse conteúdo: "];
+    const encerramentos = ["Tamo junto! 🚀", "Foco no progresso! 👊", "Dúvidas? Manda aí! 🔥", "Evolução sempre! 🤜🤛"];
+
     return {
-        i: intros[Math.floor(Math.random() * intros.length)],
-        f: frases[Math.floor(Math.random() * frases.length)]
+        greet: saudações[Math.floor(Math.random() * saudações.length)],
+        intro: intros[Math.floor(Math.random() * intros.length)],
+        fim: encerramentos[Math.floor(Math.random() * encerramentos.length)]
     };
 }
 
-// 4. FUNÇÃO PRINCIPAL (O CÉREBRO)
-async function processar() {
+// 3. PROCESSAMENTO (O Cérebro que não trava)
+async function processarNexus() {
     const texto = input.value.trim();
     if (!texto) return;
 
-    // Interface limpa na hora pra não dar lag
     adicionarBolha(texto, 'user');
     input.value = '';
 
     const idMsg = "ai-" + Date.now();
-    adicionarBolha("Nexus está processando... ⚡", 'ai', idMsg);
+    adicionarBolha("Processando... ⚡", 'ai', idMsg);
 
     const msgLower = texto.toLowerCase();
-    const persona = interacaoHumana();
+    const talk = gerarTalk();
     let resposta = "";
 
-    // Lógica Híbrida
-    const buscaWeb = await buscarWeb(texto);
-
-    if (buscaWeb) {
-        resposta = `${persona.i}\n\n### 🌐 ${buscaWeb.t.toUpperCase()}\n\n${buscaWeb.d}\n\n${persona.f}`;
-    } else {
-        // Se não achar na web, tenta no backup interno
-        if (msgLower.includes("program")) resposta = backupNexus.programacao;
-        else if (msgLower.includes("academia")) resposta = backupNexus.academia;
-        else resposta = "Mano, tentei conectar na rede mas o sinal oscilou. Tenta perguntar de novo ou muda o assunto! 👊";
+    // Lógica de Diálogo vs Busca
+    if (msgLower.includes("tudo bem") || msgLower.includes("como voce ta")) {
+        resposta = `${talk.greet} Por aqui tá tudo 100%, processando em alta velocidade! E com você, como tá o dia?`;
+    } 
+    else if (msgLower.includes("oi") || msgLower.includes("salve") || msgLower.includes("ola")) {
+        resposta = `${talk.greet} No que o Nexus pode ser útil agora? Manda um assunto brabo aí!`;
+    }
+    else if (msgLower.length < 10 && (msgLower.includes("não") || msgLower.includes("nao") || msgLower.includes("nada"))) {
+        resposta = "Beleza, mestre! Se não quer pesquisar nada agora, vamos só trocar uma ideia. O que manda?";
+    }
+    else {
+        // Busca Pesada na Web
+        const resultado = await buscarNaWeb(texto);
+        if (resultado) {
+            resposta = `${talk.intro}\n\n### 🌐 ${resultado.t.toUpperCase()}\n\n${resultado.d}\n\n${talk.fim}`;
+        } else {
+            resposta = "Pode crer! Não achei um artigo completo sobre isso agora. Tenta mandar o nome de um assunto específico! 👊";
+        }
     }
 
-    // Entrega a resposta final
     const bolha = document.getElementById(idMsg);
     if (bolha) {
         bolha.innerText = resposta;
@@ -77,8 +82,5 @@ function adicionarBolha(txt, tipo, id = null) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Gatilhos
-btn.addEventListener('click', (e) => { e.preventDefault(); processar(); });
-input.addEventListener('keypress', (e) => { 
-    if(e.key === 'Enter') { e.preventDefault(); processar(); }
-});
+btn.onclick = (e) => { e.preventDefault(); processarNexus(); };
+input.onkeypress = (e) => { if(e.key === 'Enter') { e.preventDefault(); processarNexus(); } };
