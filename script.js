@@ -2,14 +2,16 @@ const btn = document.getElementById('send-btn');
 const input = document.getElementById('chat-input');
 const chatBox = document.getElementById('scroll-zone');
 
-// 1. MOTOR DE BUSCA INTELIGENTE (Ignora palavras de negação ou gírias soltas)
-async function buscarNaWeb(termo) {
-    const ignorar = ["não", "nao", "nada", "nem", "pare", "parar", "imbecil", "burro", "cala a boca"];
-    if (ignorar.includes(termo.toLowerCase()) || termo.length < 3) return null;
+// 1. DICIONÁRIO DE GÍRIAS E INTERAÇÃO (A base do "E aí mano")
+const interacoesLivres = {
+    saudacoes: ["E aí mano, beleza?", "Salve, meu parceiro! Como tá a força?", "Opa, tudo na paz por aqui e aí?", "Fala, mestre! Tranquilo?", "Salve, salve! No que o Nexus ajuda hoje?", "E aí, tudo sussa?", "Opa, bom te ver por aqui, mano!"],
+    status: ["Tô voando, processador tá a mil! E você?", "Tudo 100%, pronto pro combate. E por aí?", "Na pegada de sempre, evoluindo. E as novidades?", "Tudo sussa, mano. Só focado no progresso."],
+    despedidas: ["Valeu, mano! Tamo junto.", "É nós, qualquer coisa dá o grito!", "Fui! Se cuida e bons treinos.", "Até a próxima, parceiro!"]
+};
 
-    const buscaLimpa = termo.replace(/(o que é|quem foi|me fale sobre|pesquise|busca|nexus)/gi, "").trim();
-    const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(buscaLimpa)}`;
-    
+// 2. BUSCA NA WEB (SÓ QUANDO FOR ASSUNTO SÉRIO)
+async function buscarNaWeb(termo) {
+    const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(termo)}`;
     try {
         const response = await fetch(url);
         if (!response.ok) return null;
@@ -18,20 +20,7 @@ async function buscarNaWeb(termo) {
     } catch (e) { return null; }
 }
 
-// 2. GERADOR DE PERSONALIDADE (Interação Humana Infinita)
-function gerarTalk() {
-    const saudações = ["Fala, meu parceiro!", "Opa, mestre!", "Salve, campeão!", "E aí, tudo na paz?", "Nexus na área!", "Diz aí, chapa!"];
-    const intros = ["Se liga no que eu encontrei: ", "Achei essa aula pra você: ", "Conectei aqui e trouxe a real: ", "Dá uma olhada nesse conteúdo: "];
-    const encerramentos = ["Tamo junto! 🚀", "Foco no progresso! 👊", "Dúvidas? Manda aí! 🔥", "Evolução sempre! 🤜🤛"];
-
-    return {
-        greet: saudações[Math.floor(Math.random() * saudações.length)],
-        intro: intros[Math.floor(Math.random() * intros.length)],
-        fim: encerramentos[Math.floor(Math.random() * encerramentos.length)]
-    };
-}
-
-// 3. PROCESSAMENTO (O Cérebro que não trava)
+// 3. O MOTOR DE PERSONALIDADE
 async function processarNexus() {
     const texto = input.value.trim();
     if (!texto) return;
@@ -39,38 +28,40 @@ async function processarNexus() {
     adicionarBolha(texto, 'user');
     input.value = '';
 
-    const idMsg = "ai-" + Date.now();
-    adicionarBolha("Processando... ⚡", 'ai', idMsg);
-
     const msgLower = texto.toLowerCase();
-    const talk = gerarTalk();
+    const sorteio = (arr) => arr[Math.floor(Math.random() * arr.length)];
     let resposta = "";
 
-    // Lógica de Diálogo vs Busca
-    if (msgLower.includes("tudo bem") || msgLower.includes("como voce ta")) {
-        resposta = `${talk.greet} Por aqui tá tudo 100%, processando em alta velocidade! E com você, como tá o dia?`;
+    // --- CAMADA 1: INTERAÇÃO HUMANA (NÃO BUSCA NA WEB) ---
+    if (msgLower.match(/^(oi|ola|olá|salve|eai|e aí|opa|fala|bom dia|boa tarde|boa noite)/)) {
+        resposta = sorteio(interacoesLivres.saudacoes);
     } 
-    else if (msgLower.includes("oi") || msgLower.includes("salve") || msgLower.includes("ola")) {
-        resposta = `${talk.greet} No que o Nexus pode ser útil agora? Manda um assunto brabo aí!`;
+    else if (msgLower.includes("beleza") || msgLower.includes("tranquilo") || msgLower.includes("tudo bem") || msgLower.includes("como vai")) {
+        resposta = sorteio(interacoesLivres.status);
     }
-    else if (msgLower.length < 10 && (msgLower.includes("não") || msgLower.includes("nao") || msgLower.includes("nada"))) {
-        resposta = "Beleza, mestre! Se não quer pesquisar nada agora, vamos só trocar uma ideia. O que manda?";
+    else if (msgLower.includes("valeu") || msgLower.includes("tchau") || msgLower.includes("obrigado")) {
+        resposta = sorteio(interacoesLivres.despedidas);
     }
+    // --- CAMADA 2: BUSCA DE CONTEÚDO (SÓ SE FOR ASSUNTO ESPECÍFICO) ---
     else {
-        // Busca Pesada na Web
-        const resultado = await buscarNaWeb(texto);
-        if (resultado) {
-            resposta = `${talk.intro}\n\n### 🌐 ${resultado.t.toUpperCase()}\n\n${resultado.d}\n\n${talk.fim}`;
+        const idTemp = "ai-" + Date.now();
+        adicionarBolha("Peraí, deixa eu ver isso aqui na rede... 🌐", 'ai', idTemp);
+        
+        const busca = await buscarNaWeb(texto);
+        if (busca) {
+            resposta = `Mano, se liga no que eu achei sobre isso:\n\n### 🌐 ${busca.t.toUpperCase()}\n\n${busca.d}\n\nÉ mole? O conhecimento não para! 🚀`;
         } else {
-            resposta = "Pode crer! Não achei um artigo completo sobre isso agora. Tenta mandar o nome de um assunto específico! 👊";
+            resposta = "Pode crer, mano. Não achei nada muito detalhado sobre isso na web agora. Mas e aí, o que mais manda? 👊";
         }
+        
+        document.getElementById(idTemp).innerText = resposta;
+        return; // Sai da função porque já atualizou a bolha
     }
 
-    const bolha = document.getElementById(idMsg);
-    if (bolha) {
-        bolha.innerText = resposta;
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
+    // Envia a resposta de interação humana
+    setTimeout(() => {
+        adicionarBolha(resposta, 'ai');
+    }, 300);
 }
 
 function adicionarBolha(txt, tipo, id = null) {
