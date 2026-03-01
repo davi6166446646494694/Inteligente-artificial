@@ -1,40 +1,30 @@
-const bancoSaudacoes = {
-    // Usamos RegExp para garantir que a palavra esteja isolada (\b)
-    gatilhos: [/\boi\b/i, /\bolá\b/i, /\be aí\b/i, /\bom dia\b/i],
-    
-    respostas: [
-        "Olá! Como posso ajudar?",
-        "Oi! Tudo certo por aqui.",
-        "Opa! O que mandas?"
-    ],
-
-    gerarResposta() {
-        return this.respostas[Math.floor(Math.random() * this.respostas.length)];
-    }
-};
-
 function processarMensagem(mensagemUsuario) {
-    // 1. Filtro de mensagens automáticas de sistema
-    // Se a mensagem contiver termos típicos de logs ou scrolls, a IA ignora
-    const termosIgnorar = ["scroll automático", "recebi!", "mensagem do sistema"];
-    const ehMensagemSistema = termosIgnorar.some(termo => 
-        mensagemUsuario.toLowerCase().includes(termo)
+    // 1. LISTA NEGRA (O que a IA deve ignorar totalmente)
+    const frasesDeSistema = [
+        "recebi!",
+        "scroll automático",
+        "garantiu que você visse",
+        "mensagem do sistema"
+    ];
+
+    // Verifica se a mensagem contém QUALQUER uma das frases proibidas
+    const ehMensagemInvalida = frasesDeSistema.some(frase => 
+        mensagemUsuario.toLowerCase().includes(frase)
     );
 
-    if (ehMensagemSistema) return null; // Não responde nada
-
-    // 2. Verificação de saudação real
-    const encontrouGatilho = bancoSaudacoes.gatilhos.some(regex => 
-        regex.test(mensagemUsuario)
-    );
-
-    if (encontrouGatilho) {
-        return bancoSaudacoes.gerarResposta();
+    // Se for mensagem de sistema, para a execução aqui mesmo
+    if (ehMensagemInvalida) {
+        console.log("Sistema: Ignorando mensagem de log/scroll.");
+        return null; 
     }
 
-    return "Entendi, mas não sei como responder a isso ainda.";
-}
+    // 2. LÓGICA DE CUMPRIMENTO (Só chega aqui se não for lixo)
+    const gatilhosSaudacao = ["oi", "olá", "bom dia", "boa tarde", "e aí"];
+    const mensagemLimpa = mensagemUsuario.toLowerCase().trim();
 
-// TESTES:
-console.log(processarMensagem("Oi, tudo bem?")); // Responde: "Olá!..."
-console.log(processarMensagem("Recebi! O scroll automático garantiu...")); // Responde: null (Silêncio)
+    if (gatilhosSaudacao.includes(mensagemLimpa)) {
+        return "Olá! Agora sim, parei de repetir aquele erro.";
+    }
+
+    return "Entendido. Como posso ajudar?";
+}
