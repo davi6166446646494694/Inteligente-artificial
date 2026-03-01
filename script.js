@@ -2,100 +2,87 @@ const btn = document.getElementById('send-btn');
 const input = document.getElementById('chat-input');
 const chatBox = document.getElementById('scroll-zone');
 
+// 1. A ENCICLOPÉDIA TÉCNICA (Conteúdo de Alta Densidade)
+const artigos = {
+    programacao: `### 💻 ARQUITETURA DE SISTEMAS E ENGENHARIA DE SOFTWARE\n\nA programação é a espinha dorsal da civilização moderna. Não se trata apenas de digitar comandos, mas de projetar estruturas de dados e algoritmos que resolvem problemas em escala global.\n\n* **LÓGICA E ALGORITMOS:** Tudo começa na lógica booleana. Um algoritmo é uma sequência finita de instruções bem definidas.\n* **LINGUAGENS DE ELITE:** Python domina a IA; JavaScript reina na Web (React/Node). O domínio de estruturas de dados e Big O Notation separa o júnior do sênior.\n* **FUTURO:** Estamos na era da computação quântica e redes neurais profundas. Programar hoje é colaborar com IAs para acelerar a produção de software seguro e escalável.`,
+
+    academia: `### 🏋️‍♂️ FISIOLOGIA DO EXERCÍCIO E BIOQUÍMICA DA HIPERTROFIA\n\nO corpo humano é uma máquina adaptativa. A musculação impõe um estresse metabólico que força a síntese proteica via sinalização mTOR.\n\n* **TREINO:** Cargas altas e poucas repetições focam em força neural. Volume moderado foca em hipertrofia sarcoplasmática.\n* **PERSONAL TRAINER:** Essencial para periodização e biomecânica. O investimento em um profissional (pago via Pix ou mensalidade) garante longevidade articular e resultados reais.\n* **NUTRIÇÃO:** Creatina para ATP, Whey para recuperação e 35ml de água por kg de peso. O músculo cresce no descanso (sono REM), não no treino.`,
+
+    politica: `### 🏛️ GEOPOLÍTICA, ESTADO E ECONOMIA TRIBUTÁRIA\n\nO Estado Moderno funciona sob o contrato social. A organização baseia-se na separação dos poderes para evitar a tirania.\n\n* **DIVISÃO DOS PODERES:** O Executivo administra, o Legislativo cria leis e fiscaliza, o Judiciário garante o cumprimento da Constituição.\n* **CARGA TRIBUTÁRIA:** Impostos como IPVA, IPTU e IRPF financiam a máquina pública. A inflação é o imposto invisível que corrói o poder de compra.\n* **GEOPOLÍTICA:** O comércio global depende de fuso horários, cotação de moedas (Dólar/Euro) e tratados diplomáticos entre nações.`
+};
+
+// 2. GERADOR DE INTERAÇÃO HUMANA (As "5.000" formas de interagir)
+function gerarInteracao(tipo) {
+    const saudacoes = [
+        "Fala, meu parceiro! Olha só o que eu preparei pra você: ",
+        "Opa, mestre! Estava estudando isso agorinha. Se liga no relatório: ",
+        "Salve! Essa pergunta é de elite. Vou te entregar o conteúdo completo: ",
+        "E aí, tudo na paz? Como você pediu, aqui está a análise profunda: ",
+        "Direto ao ponto, meu amigo. Prepare-se para essa aula: ",
+        "Com certeza! Vamos mergulhar nesse assunto agora: ",
+        "O Nexus nunca falha! Dá uma olhada nessa estrutura que eu montei: ",
+        "É pra já! Conhecimento é poder, e aqui está o seu: "
+    ];
+    
+    const reacoesHumor = [
+        "Espero que isso ajude na sua jornada hoje! 🚀",
+        "Tamo junto nessa busca pela evolução! 👊",
+        "Qualquer dúvida sobre os detalhes, é só dar o grito.",
+        "O aprendizado não para nunca. Vamos pra cima! 🔥",
+        "Espero que esse artigo mude sua visão sobre o tema."
+    ];
+
+    const s = saudacoes[Math.floor(Math.random() * saudacoes.length)];
+    const r = reacoesHumor[Math.floor(Math.random() * reacoesHumor.length)];
+    
+    return { inicio: s, fim: r };
+}
+
+// 3. MOTOR DE PROCESSAMENTO INTERNO
 function processarRespostaIA(mensagemUsuario) {
     const msg = mensagemUsuario.toLowerCase().trim();
+    const interacao = gerarInteracao();
 
-    // 1. MOTOR MATEMÁTICO (Potência Total)
+    // MATEMÁTICA
     if (/^[0-9+\-*/().\s^]+$/.test(msg) && /[0-9]/.test(msg)) {
         try {
-            const resultado = eval(msg.replace('^', '**')); 
-            return `Cálculo de elite: **${resultado}**. 🧮`;
+            const res = eval(msg.replace('^', '**'));
+            return `${interacao.inicio}\n\nO resultado exato da sua conta é **${res}**. ${interacao.fim}`;
         } catch (e) { }
     }
 
-    const bancoDeDados = [
-        // --- NÚCLEO: EMOÇÕES, SAUDAÇÕES E RESPEITO ---
-        {
-            chaves: ["oi", "ola", "olá", "salve", "eai", "opa", "fala", "bom dia", "boa tarde", "boa noite", "suave", "beleza", "tranquilo", "firmeza", "tamo junto", "fala tu", "coé", "saudações", "oie"],
-            resposta: "Opa meu parceiro! Como tá essa força? No que o Nexus pode te ajudar a evoluir hoje? 😊"
-        },
-        {
-            chaves: ["tudo bem", "como vai", "ta bem", "tá bem", "como voce ta", "como você está", "tudo certo", "tudo em cima", "como estão as coisas"],
-            resposta: "Por aqui tudo processando 100%! E com você, como estão as coisas? No que o mestre precisa de ajuda? 👊"
-        },
-        {
-            chaves: ["bem", "bom", "ótimo", "excelente", "maravilha", "top", "massa", "daora", "feliz", "contente", "animado", "empolgado", "venci", "consegui", "brabo"],
-            resposta: "Fico feliz demais em saber disso! Ver meu parceiro na pegada certa anima meu sistema. Bora manter esse ritmo! 🚀"
-        },
-        {
-            chaves: ["mal", "triste", "bad", "ruim", "deprimido", "sozinho", "chorando", "angustia", "baixo astral", "derrotado", "cansado", "exbausto", "péssimo", "sofrimento"],
-            resposta: "Sinto muito por isso, mestre. Respira fundo. Todo mundo tem dias cinzas, mas o sol sempre volta. Tô aqui se precisar desabafar ou distrair a mente. 🤜🤛"
-        },
-
-        // --- NÚCLEO: ACADEMIA, CORPO E PERSONAL ---
-        {
-            chaves: ["academia", "treino", "musculação", "ferro", "puxar peso", "personal", "professor", "creatina", "whey", "suplemento", "shape", "corpo", "saúde", "dieta", "biceps", "perna", "hipertrofia", "emagrecer", "cardio", "fisiologia", "agachamento", "supino", "anabolismo", "proteína", "pre-treino"],
-            resposta: "Treino de elite! 💪 O personal você paga por fora (Pix/Cartão). Ele garante sua postura pra você não virar um 'cupim de ferro'. Creatina é força, Whey é músculo. Já bateu a meta de água hoje? (35ml x seu peso)!"
-        },
-
-        // --- NÚCLEO: CARROS, MOTORES E MECÂNICA ---
-        {
-            chaves: ["carro", "motor", "veículo", "v6", "v8", "turbo", "aspirado", "gasolina", "pneu", "mecanico", "oficina", "cambio", "marcha", "drift", "torque", "cavalo", "hp", "nitro", "suspensão", "aro", "rebaixado", "escapamento", "embreagem", "radiador", "pistão", "biela", "carburador", "injeção"],
-            resposta: "Falar de máquina é outra história! 🚗 Motor turbo entrega torque rápido, mas aspirado tem aquele ronco clássico. Carro exige cuidado: óleo no nível e revisão em dia. Qual máquina você tá de olho?"
-        },
-
-        // --- NÚCLEO: BUROCRACIA, DINHEIRO E PAÍSES ---
-        {
-            chaves: ["passaporte", "visto", "viagem", "viajar", "pf", "federal", "aeroporto", "imposto", "taxa", "leão", "receita", "ipva", "iptu", "irpf", "dinheiro", "grana", "fuso", "horário", "japão", "eua", "europa", "argentina", "portugal", "moeda", "dolar", "euro", "intercâmbio", "turismo"],
-            resposta: "Burocracia é o terror! 💸 Passaporte é na PF (paga a guia e agenda). Imposto (IPVA, IPTU) não tem como fugir, o segredo é se organizar. Se for viajar, confira o fuso e a cotação da moeda antes! ✈️"
-        },
-
-        // --- NÚCLEO: POLÍTICA E GOVERNO ---
-        {
-            chaves: ["política", "politica", "governo", "presidente", "eleição", "voto", "ministro", "senado", "congresso", "lei", "brasília", "democracia", "partido", "prefeito", "governador", "votação", "stf", "constituição", "câmara"],
-            resposta: "O sistema é bruto! 🏛️ O presidente lidera, mas o Congresso tem o poder da caneta. Ficar de olho na política é o único jeito de entender pra onde vai o seu imposto e o futuro do país!"
-        },
-
-        // --- NÚCLEO: REDES SOCIAIS E INTERNET ---
-        {
-            chaves: ["instagram", "insta", "tiktok", "reels", "youtube", "yt", "famoso", "influencer", "celebridade", "hype", "engajamento", "twitter", "tt", "x", "seguidores", "viral", "fama", "cancelado", "post", "feed", "stories", "algoritmo", "monetização"],
-            resposta: "O algoritmo não dorme! 📱 No TikTok é o hype, no YouTube é a retenção. Ser famoso exige constância e paciência pros haters. Quer crescer? Foca no conteúdo que agrega valor real!"
-        },
-
-        // --- NÚCLEO: PROGRAMAÇÃO E CÓDIGO ---
-        {
-            chaves: ["python", "javascript", "js", "html", "css", "programação", "código", "dev", "desenvolvedor", "ia", "algoritmo", "front", "back", "fullstack", "banco de dados", "vscode", "react", "node", "api", "framework", "git", "github", "logic", "script"],
-            resposta: "Programar é o novo superpoder! 💻 Python pra IA, JS pra web. Se o código deu erro, relaxa: 90% das vezes é um detalhe de sintaxe. Qual projeto você tá buildando agora?"
-        },
-
-        // --- NÚCLEO: AGRADECIMENTOS E PARCERIA ---
-        {
-            chaves: ["obrigado", "valeu", "vlw", "agradecido", "obrigada", "ajudou", "perfeito", "tks", "thanks", "gratidão", "te amo", "gosto de você", "melhor ia", "parceria", "amigo", "brother", "parceiro"],
-            resposta: "Tamo junto demais, meu parceiro! É gratificante ver o progresso do nosso sistema. No que eu puder ajudar, o Nexus tá aqui. ❤️👊"
-        }
-    ];
-
-    // BUSCA POR ASSOCIAÇÃO (Cobrindo milhares de frases)
-    for (let item of bancoDeDados) {
-        for (let chave of item.chaves) {
-            if (msg.includes(chave)) return item.resposta;
-        }
+    // BUSCA DE ARTIGOS COM INTERAÇÃO
+    if (msg.includes("program") || msg.includes("codigo") || msg.includes("dev")) {
+        return `${interacao.inicio}\n\n${artigos.programacao}\n\n${interacao.fim}`;
+    }
+    if (msg.includes("academia") || msg.includes("treino") || msg.includes("personal")) {
+        return `${interacao.inicio}\n\n${artigos.academia}\n\n${interacao.fim}`;
+    }
+    if (msg.includes("politica") || msg.includes("governo") || msg.includes("imposto")) {
+        return `${interacao.inicio}\n\n${artigos.politica}\n\n${interacao.fim}`;
     }
 
-    return "Pode crer! Não tenho todos os detalhes sobre isso agora, mas o Nexus tá aqui pra aprender contigo. Explica melhor ou pergunta de outro jeito! 👊";
+    // CONVERSA CASUAL
+    if (msg.includes("tudo bem") || msg.includes("como voce ta")) {
+        return "Tudo voando por aqui, parceiro! O sistema tá em 100%. E você, como tá essa força? Preparado pra aprender algo novo hoje? 😊";
+    }
+    if (msg.includes("oi") || msg.includes("ola") || msg.includes("salve")) {
+        return "Opa! Salve, meu chapa! No que o Nexus pode ser útil agora? Manda o assunto que eu mando o artigo! 👊";
+    }
+
+    return "Pode crer! Esse assunto ainda não tá na minha enciclopédia detalhada, mas se você quiser, eu posso tentar resumir o que eu sei. O que você acha? 👊";
 }
 
+// 4. INTERFACE E PERFORMANCE
 function enviarMensagem() {
     const texto = input.value.trim();
     if (!texto) return;
-
     adicionarBolha(texto, 'user');
     input.value = '';
-
     setTimeout(() => {
         const respostaFinal = processarRespostaIA(texto);
         adicionarBolha(respostaFinal, 'ai');
-    }, 450);
+    }, 400);
 }
 
 function adicionarBolha(texto, tipo) {
@@ -104,6 +91,10 @@ function adicionarBolha(texto, tipo) {
     div.innerText = texto;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+btn.onclick = enviarMensagem;
+input.onkeypress = (e) => { if(e.key === 'Enter') enviarMensagem(); };
 }
 
 btn.onclick = enviarMensagem;
