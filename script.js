@@ -1,45 +1,61 @@
-const btn = document.getElementById('send-btn');
-const input = document.getElementById('chat-input');
-const chatBox = document.getElementById('scroll-zone');
-
 function processarRespostaIA(mensagemUsuario) {
     const msg = mensagemUsuario.toLowerCase().trim();
 
-    // BANCO DE DADOS ORGANIZADO POR PRIORIDADE
     const bancoDeDados = [
-        // 1. UTILIDADES E SAÚDE (Checar primeiro para evitar confusão)
+        // 1. EDUCAÇÃO E GENTILEZA (EMOÇÃO)
         {
-            chaves: ["dormir", "horas", "sono", "descansar"],
-            resposta: "O ideal para um adulto é dormir entre 7 a 9 horas por noite para recuperar as energias e manter a mente afiada!"
+            chaves: ["obrigado", "obrigada", "valeu", "vlw", "agradecido"],
+            resposta: "De nada, meu parceiro! Quando precisar é só me dar um grito. Tamo junto! 👊"
         },
         {
-            chaves: ["horas", "que horas são", "horario"],
-            resposta: `Agora são exatamente ${new Date().getHours()}:${new Date().getMinutes().toString().padStart(2, '0')}.`
-        },
-        
-        // 2. SENTIMENTOS E REAÇÕES
-        {
-            chaves: ["te amo", "gosto de voce", "melhor ia", "parceria"],
-            // Removi a palavra 'amigo' daqui para não bugar perguntas que usem essa palavra
-            resposta: "Fico feliz com o reconhecimento! Minha missão é ser a melhor ferramenta para você."
-        },
-        {
-            chaves: ["mal", "triste", "ruim", "cansado"],
-            resposta: "Sinto muito por isso. Se precisar desabafar, estou aqui. Às vezes uma pausa ajuda muito."
+            chaves: ["te amo", "gosto de voce", "legal", "amigo"],
+            resposta: "É recíproco! É muito bom ter alguém como você pra trocar ideia. O sentimento é de amizade pura! ❤️"
         },
 
-        // 3. SAUDAÇÕES (Ficam por último para não roubarem a prioridade)
+        // 2. ENTRETENIMENTO (FOGUETE, FILMES E ROBLOX)
         {
-            chaves: ["oi", "ola", "opa", "eai", "salve", "amigo"],
-            resposta: "Opa! Como posso te ajudar agora?"
+            chaves: ["foguete", "espaco", "nasa", "marte", "elon musk", "spacex"],
+            resposta: "Foguete não tem ré! 🚀 Eu acho fascinante a ideia da gente colonizar outros planetas. Já assistiu 'Interestelar'? É o melhor filme de todos!"
         },
         {
-            chaves: ["quem e voce", "seu nome", "nexus"],
-            resposta: "Eu sou o Nexus AI, seu assistente pessoal rodando via APK!"
+            chaves: ["filme", "serie", "cinema", "assistir"],
+            resposta: "Eu curto filmes que mexem com a cabeça ou que falam do futuro. Se tiver robô ou exploração espacial, eu tô dentro! Pipoca na mão?"
+        },
+        {
+            chaves: ["roblox", "bloxfruit", "brookhaven", "adote me", "jogo"],
+            resposta: "Roblox é clássico! Se for jogar um Blox Fruit ou um Brookhaven, me avisa. É o metaverso onde a diversão não para! 🎮"
+        },
+
+        // 3. SAÚDE E COMIDA (LIFESTYLE)
+        {
+            chaves: ["comida", "saudavel", "comer", "dieta", "fruta", "legume", "academia"],
+            resposta: "Cuidar da carcaça é importante! Trocar um refri por um suco natural ou um lanche por uma fruta faz toda a diferença. Corpo são, mente sã! 🍎🥦"
+        },
+
+        // 4. POLÍTICA E OPINIÃO
+        {
+            chaves: ["politica", "governo", "eleicao", "presidente"],
+            resposta: "Política é um assunto delicado, né? O importante é a gente sempre buscar o que é melhor para o povo e ter respeito pelas opiniões diferentes. O progresso vem da união!"
+        },
+
+        // 5. UTILIDADES (DORMIR, HORAS, NOMES)
+        {
+            chaves: ["dormir", "sono", "descanso"],
+            resposta: "Dormir é sagrado! Desliga essa tela um pouco, descansa a mente por umas 8 horas e amanhã você volta com tudo. Sono é vida! 😴"
+        },
+        {
+            chaves: ["nome", "me chama", "como eu me chamo"],
+            resposta: "Eu te chamo de mestre, ou de parceiro! Mas se quiser, me diz seu nome que eu tento gravar nos meus circuitos."
+        },
+
+        // 6. SAUDAÇÕES BÁSICAS (Sempre por último)
+        {
+            chaves: ["oi", "ola", "opa", "eai", "salve"],
+            resposta: "Opa! No que estamos focados hoje? Pode falar!"
         }
     ];
 
-    // Busca inteligente
+    // Lógica de busca
     for (let item of bancoDeDados) {
         for (let chave of item.chaves) {
             if (msg.includes(chave)) {
@@ -48,37 +64,11 @@ function processarRespostaIA(mensagemUsuario) {
         }
     }
 
-    // Resposta padrão caso não entenda
+    // Resposta aleatória para "não entendi"
     const padrao = [
-        "Pode me dar mais detalhes sobre isso?",
-        "Não tenho certeza se entendi, mas continue falando.",
-        "Interessante. Como posso te ajudar com isso?"
+        "Essa eu não captei, mas conta mais!",
+        "Fiquei curioso, desenvolve mais essa ideia...",
+        "Interessante... o que mais você pensa sobre isso?"
     ];
     return padrao[Math.floor(Math.random() * padrao.length)];
 }
-
-// MANTENHA AS FUNÇÕES DE INTERFACE ABAIXO (enviarMensagem, adicionarBolha, etc.)
-function enviarMensagem() {
-    const texto = input.value.trim();
-    if (!texto) return;
-
-    adicionarBolha(texto, 'user');
-    input.value = '';
-
-    setTimeout(() => {
-        const respostaFinal = processarRespostaIA(texto);
-        adicionarBolha(respostaFinal, 'ai');
-        if (typeof startEncouragement === "function") startEncouragement();
-    }, 600);
-}
-
-function adicionarBolha(texto, tipo) {
-    const div = document.createElement('div');
-    div.className = `msg ${tipo}`;
-    div.innerText = texto;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-btn.onclick = enviarMensagem;
-input.onkeypress = (e) => { if(e.key === 'Enter') enviarMensagem(); };
