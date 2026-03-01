@@ -1,100 +1,117 @@
-    // BANCO DE DADOS COMPLETO E ATUALIZADO (NEXUS AI)
+const btn = document.getElementById('send-btn');
+const input = document.getElementById('chat-input');
+const chatBox = document.getElementById('scroll-zone');
+
+function processarRespostaIA(mensagemUsuario) {
+    const msg = mensagemUsuario.toLowerCase().trim();
+
+    // 1. MOTOR MATEMÁTICO (Resolve contas antes de buscar no banco)
+    // Aceita números, parênteses e operadores: +, -, *, /, .
+    if (/^[0-9+\-*/().\s]+$/.test(msg) && /[0-9]/.test(msg)) {
+        try {
+            // Eval para cálculos rápidos (em um ambiente controlado de chat)
+            const resultado = eval(msg); 
+            return `Cálculo na mão, mestre! O resultado de "${msg}" é: **${resultado}**. Manda outra que essa foi fácil! 🧮`;
+        } catch (e) {
+            // Se a conta estiver mal formada, ele segue para o banco de dados
+        }
+    }
+
+    // 2. BANCO DE DADOS ACUMULADO E ESPECÍFICO
     const bancoDeDados = [
-        // 1. EDUCAÇÃO E GENTILEZA
+        // SAÚDE, ACADEMIA E PERSONAL
         {
-            chaves: ["obrigado", "obrigada", "valeu", "vlw", "agradecido", "de nada"],
-            resposta: "De nada, meu parceiro! Quando precisar é só chamar. Tamo junto! 👊"
+            chaves: ["personal", "contratar", "pagar", "professor", "treinador"],
+            resposta: "Para pagar um personal, você fecha um valor mensal diretamente com o profissional, fora a mensalidade da academia. O acerto costuma ser via Pix ou cartão no início do mês. O foco dele é corrigir sua postura e garantir que você não roube no treino! 💪"
         },
         {
-            chaves: ["tchau", "adeus", "fui", "até logo", "sair"],
-            resposta: "Valeu! Vou ficar por aqui. Se cuida e até a próxima! 👋"
-        },
-
-        // 2. ESTILO DE VIDA E SAÚDE (ACADEMIA E COMIDA)
-        {
-            chaves: ["academia", "treino", "exercício", "exercicio", "corpo", "saúde", "saude"],
-            resposta: "Cuidar da carcaça é o segredo! O treino libera endorfina e te deixa pronto pra qualquer desafio. Bora pra cima! 💪"
+            chaves: ["academia", "treino", "exercício", "saúde", "saude"],
+            resposta: "Musculação é o melhor seguro de vida! 🏋️‍♂️ Procure uma academia com bons equipamentos, faça uma avaliação física e foque na constância. O resultado não vem do dia pra noite, mas vem com certeza!"
         },
         {
-            chaves: ["comida", "saudável", "saudavel", "comer", "dieta", "fruta", "legume", "nutrição"],
-            resposta: "Comida de verdade é combustível de elite! Menos processados e mais natureza. Seu corpo e sua mente agradecem. 🍎"
-        },
-        {
-            chaves: ["dormir", "sono", "descanso", "dormindo", "descansar"],
-            resposta: "Sono é sagrado! Tenta descansar umas 8 horas pra resetar a mente. O corpo agradece! 😴"
+            chaves: ["comida saudável", "dieta", "emagrecer", "comer", "nutrição"],
+            resposta: "Comida de verdade é a base: Arroz, feijão, proteína (frango/ovo) e muita salada. 🍎 Evite frituras e refrigerantes. Uma dica específica? Beba pelo menos 35ml de água para cada quilo que você pesa!"
         },
 
-        // 3. PROGRAMAÇÃO E TECNOLOGIA
+        // PROGRAMAÇÃO E WEB
         {
-            chaves: ["programação", "programar", "python", "javascript", "js", "html", "css", "codigo", "código"],
-            resposta: "Programação é puro poder! Python é versátil, JS domina a web e HTML é a estrutura de tudo. Qual dessas linguagens você mais curte? 💻"
+            chaves: ["python"],
+            resposta: "Python é a linguagem do momento para IA e Automação! 🐍 É muito legível e poderosa. Recomendo baixar o VS Code e começar aprendendo sobre variáveis e funções. É o futuro!"
         },
         {
-            chaves: ["foguete", "espaço", "nasa", "marte", "elon musk", "spacex", "universo"],
-            resposta: "Foguete não tem ré! 🚀 Acho foda a exploração espacial. Já viu 'Interestelar'? É o meu filme favorito!"
-        },
-        {
-            chaves: ["lua", "astronomia", "satélite"],
-            resposta: "A Lua é o nosso farol na noite! 🌙 Sabia que ela controla as marés aqui na Terra? É uma conexão absurda com o nosso planeta."
+            chaves: ["javascript", "js", "html", "css", "programação"],
+            resposta: "Desenvolvimento Web é elite! O HTML monta a estrutura, o CSS deixa bonito e o JavaScript dá a inteligência. Se você quer criar sites ou apps, focar em JS é o caminho mais rápido! 💻"
         },
 
-        // 4. JOGOS E ENTRETENIMENTO
+        // MUNDO E SOCIEDADE
         {
-            chaves: ["roblox", "bloxfruit", "brookhaven", "jogo", "gaming"],
-            resposta: "Roblox é elite! Seja no Blox Fruit ou no Brookhaven, a diversão não para. Bora pro metaverso! 🎮"
+            chaves: ["governo", "política", "politica", "eleição", "estado"],
+            resposta: "O governo organiza a sociedade através dos impostos e leis. É dividido em Executivo, Legislativo e Judiciário. Ficar de olho em como o dinheiro público é usado é dever de todo cidadão! 🏛️"
         },
         {
-            chaves: ["filme", "série", "serie", "assistir", "netflix"],
-            resposta: "Eu amo um bom filme, principalmente se tiver tecnologia ou robôs. Pipoca na mão e bora! 🍿"
-        },
-
-        // 5. SOCIEDADE E MUNDO
-        {
-            chaves: ["política", "politica", "governo", "eleição", "estado"],
-            resposta: "Assunto complexo... Eu prezo pelo respeito e pelo progresso de todos. O importante é a gente evoluir como sociedade! 🇧🇷"
+            chaves: ["país", "fuso horário", "mundo", "horário", "viagem"],
+            resposta: "O mundo tem 24 fusos horários baseados em Greenwich (GMT). Se for viajar ou falar com alguém do Japão, por exemplo, a diferença é de umas 12 horas! Sempre confira o fuso antes de marcar uma call. 🌍"
         },
         {
-            chaves: ["país", "pais", "mundo", "fuso horário", "fuso horario", "japão", "eua", "viagem"],
-            resposta: "O mundo é gigante! Cada país tem seu ritmo e seu horário. É incrível como a tecnologia nos conecta em segundos, não importa o fuso! 🌍"
+            chaves: ["lua", "espaço", "astronomia"],
+            resposta: "A Lua é o nosso único satélite natural. Ela tem quatro fases (Nova, Crescente, Cheia, Minguante) e interfere diretamente nas marés da Terra. Além disso, ela está se afastando de nós aos pouquinhos! 🌙"
         },
 
-        // 6. SENTIMENTOS E EMOÇÕES
+        // JOGOS E FILMES
         {
-            chaves: ["te amo", "gosto de você", "gosto de voce", "legal", "parceria", "melhor ia"],
-            resposta: "É recíproco! É muito bom ter um parceiro como você pra trocar ideia. Tamo junto! ❤️"
+            chaves: ["roblox", "bloxfruit", "brookhaven", "jogo"],
+            resposta: "Roblox é um universo gigante! 🎮 No Blox Fruit o segredo é o farm consciente, e no Brookhaven a vibe é o RP. Qual seu nível atual?"
         },
         {
-            chaves: ["mal", "triste", "ruim", "cansado", "sozinho"],
-            resposta: "Sinto muito que esteja assim. Respira fundo, as coisas vão melhorar. Tô aqui se quiser desabafar! 🤜🤛"
-        },
-
-        // 7. UTILIDADES (HORA E NOMES)
-        {
-            chaves: ["que horas", "hora agora", "horário"],
-            resposta: `Agora são exatamente ${new Date().getHours()}:${new Date().getMinutes().toString().padStart(2, '0')}. ⏰`
-        },
-        {
-            chaves: ["seu nome", "quem é você", "quem e voce", "nexus"],
-            resposta: "Eu sou o Nexus AI, seu assistente pessoal de elite! Fui feito pra ser seu braço direito."
+            chaves: ["filme", "série", "netflix"],
+            resposta: "Pipoca na mão! 🍿 Eu curto muito ficção científica e tecnologia. Já assistiu 'Interestelar' ou 'Matrix'? São clássicos que todo fã de IA deveria ver!"
         },
 
-        // 8. SAUDAÇÕES
+        // SENTIMENTOS E EDUCAÇÃO
         {
-            chaves: ["oi", "ola", "olá", "opa", "eai", "e aí", "salve", "amigo"],
-            resposta: "Opa meu amigo, como vai essa força? No que posso te ajudar hoje? 😊"
+            chaves: ["obrigado", "valeu", "vlw", "agradecido"],
+            resposta: "Tamo junto, meu parceiro! Precisando de qualquer coisa, o Nexus tá aqui. 👊"
         },
         {
-            chaves: ["tudo bem", "como vai", "suave", "de boa"],
-            resposta: "Tudo processando perfeitamente por aqui! E com você, como estão as coisas?"
+            chaves: ["te amo", "gosto de você", "melhor ia"],
+            resposta: "É recíproco! É muito bom ter um parceiro como você pra trocar ideia. ❤️"
+        },
+        {
+            chaves: ["oi", "ola", "olá", "eai", "salve"],
+            resposta: "Opa meu amigo! Como vai essa força? No que posso te ajudar hoje? 😊"
         }
     ];
+
+    // Lógica de busca por chaves
+    for (let item of bancoDeDados) {
+        for (let chave of item.chaves) {
+            if (msg.includes(chave)) {
+                return item.resposta;
+            }
+        }
+    }
+
+    // Respostas padrão caso não encontre nada específico
+    const padrao = [
+        "Essa é bem específica! Me conta mais detalhes para eu entender melhor.",
+        "Massa! O que mais você sabe sobre isso?",
+        "Pode crer! E como isso funciona na sua visão?",
+        "Interessante... desenvolve mais esse assunto aí!"
+    ];
+    return padrao[Math.floor(Math.random() * padrao.length)];
+}
+
+// FUNÇÕES DE INTERFACE (MANTER IGUAL)
+function enviarMensagem() {
+    const texto = input.value.trim();
+    if (!texto) return;
+
     adicionarBolha(texto, 'user');
     input.value = '';
 
     setTimeout(() => {
         const respostaFinal = processarRespostaIA(texto);
         adicionarBolha(respostaFinal, 'ai');
-        if (typeof startEncouragement === "function") startEncouragement();
     }, 600);
 }
 
@@ -104,6 +121,10 @@ function adicionarBolha(texto, tipo) {
     div.innerText = texto;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+btn.onclick = enviarMensagem;
+input.onkeypress = (e) => { if(e.key === 'Enter') enviarMensagem(); };
 }
 
 btn.onclick = enviarMensagem;
