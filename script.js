@@ -1,161 +1,23 @@
-const btn = document.getElementById('send-btn');
-const input = document.getElementById('chat-input');
-const chatBox = document.getElementById('scroll-zone');
+// Xingamento
+["porra", "caralho", "pqp", "kct", "tnc", "vsf", "puta merda", "filho da puta", "foda-se", "merda", "desgraça", "viado", "bosta", "fdp", "putaria", "ta foda", "to puto"]
 
-// 1. DICIONÁRIO DE GÍRIAS E INTERAÇÃO (bem mais completo)
-const interacoesLivres = {
-    saudacoes: [
-        "E aí mano, beleza?", "Salve, meu parceiro! Como tá a força?", 
-        "Opa, tudo na paz por aqui e aí?", "Fala, mestre! Tranquilo?", 
-        "Salve, salve! No que o Nexus ajuda hoje?", "E aí, tudo sussa?"
-    ],
-    status: [
-        "Tô voando, processador tá a mil! E você?", "Tudo 100%, pronto pro combate. E por aí?", 
-        "Na pegada de sempre, evoluindo. E as novidades?", "Tudo sussa, mano. Só focado no progresso."
-    ],
-    despedidas: [
-        "Valeu, mano! Tamo junto.", "É nós, qualquer coisa dá o grito!", 
-        "Fui! Se cuida e bons treinos.", "Até a próxima, parceiro!"
-    ],
+// Sono
+["dormir", "sono", "boa noite", "vou deitar", "vou dormir", "tô com sono", "apagar", "boa noite mano", "tchau vou nessa", "to indo dormir", "boa noite irmão", "dormir agora"]
 
-    academia: [
-        "Mano, bora malhar? Hoje é perna ou peitão? 💪", 
-        "Treino pesado hoje? Lembra de alongar pra não ficar travado amanhã hein!", 
-        "Supino 100kg? Respeito, monstro! Qual teu split atual?", 
-        "Academia é vida, mas proteína em dia faz toda diferença, sacou?"
-    ],
+// Saúde
+["saúde", "doendo", "dor", "doente", "médico", "tô mal", "tô ruim", "imunidade", "remédio", "tô sentindo", "covid", "gripe", "tô passando mal", "febre", "tô com dor", "machucou", "lesão"]
 
-    politica: [
-        "Mano, política tá osso né... Todo mundo gritando e ninguém resolve nada.", 
-        "Eu fico na minha, mas se for pra votar, tem que escolher o menos pior, né não?", 
-        "Esquerda, direita... no final é tudo bagunça. E tu, de que lado tá na treta?", 
-        "Melhor nem falar muito, senão vira briga de família kkk"
-    ],
+// Academia (adicionando mais reais)
+["academia", "malhar", "treino", "supino", "perna", "peito", "costas", "ombro", "bíceps", "tríceps", "agachamento", "gains", "shape", "bulk", "cut", "whey", "creatina", "proteína", "musculação", "musculo", "hipertrofia", "serie", "repetição", "rep", "carga", "deadlift", "leg press"]
 
-    horaDeDormir: [  // "hora de dormir", "vou dormir", "boa noite", "tô com sono"
-        "Hora de apagar as luzes, mano. Dorme bem que amanhã tem mais batalha!", 
-        "Vai nessa, recarrega as energias. Sonha com gains pesados 💤", 
-        "Boa noite, parceiro! Amanhã a gente continua no gás.", 
-        "Sono é ouro, não vacila. Descansa aí!"
-    ],
+// Status
+["beleza", "tranquilo", "tudo bem", "como vai", "como tá", "como ta", "cm vc ta", "e tu", "e aí beleza", "de boa", "na paz", "tá de boa", "e ai", "blz", "tudo", "suave", "de boa?", "ta suave?"]
 
-    saude: [
-        "Cuida da saúde em primeiro lugar, mano. Água, comida boa e sono em dia.", 
-        "Tá sentindo o que? Dorzinha? Melhor dar um check no médico antes que piore.", 
-        "Saúde mental também conta: se tá na bad, desabafa, fala com alguém.", 
-        "Imunidade alta: come fruta, malha e evita estresse desnecessário!"
-    ],
+// Saudação
+["oi", "olá", "ola", "e aí", "salve", "opa", "fala", "bom dia", "boa tarde", "boa noite", "e ae", "eai", "fala ai", "falaê", "salve mano"]
 
-    carro: [
-        "Qual o teu carro, mano? Tô curioso! Civic, Gol, Hilux?", 
-        "Tá precisando trocar óleo? Não deixa dar zebra no motor hein.", 
-        "Gasolina tá cara pra caramba... Bora de app hoje? kkk", 
-        "Som no talo, escapamento ronca? Respeito total!"
-    ],
-
-    xingamento: [  // detecta palavrão ou xingamento → responde de boa, desarma
-        "Calma, mano... Respira fundo. Tô aqui pra ajudar, sem estresse.", 
-        "Pô, relaxa aí irmão. Desabafa o que tá pegando?", 
-        "Tá brabo hoje? De boa, passa logo. Qual o rolê?", 
-        "Sem briga, sem treta. Fala aí o que rolou de verdade."
-    ]
-};
-
-// Função auxiliar pra escolher aleatório
-const sorteio = (arr) => arr[Math.floor(Math.random() * arr.length)];
-
-// 2. BUSCA NA WEB (mantive igual, mas com timeout pra parecer mais natural)
-async function buscarNaWeb(termo) {
-    const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(termo)}`;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) return null;
-        const data = await response.json();
-        return data.extract ? { t: data.title, d: data.extract.substring(0, 400) + "..." } : null;
-    } catch (e) {
-        return null;
-    }
-}
-
-// 3. MOTOR DE PERSONALIDADE (melhorado)
-async function processarNexus() {
-    const texto = input.value.trim();
-    if (!texto) return;
-
-    adicionarBolha(texto, 'user');
-    input.value = '';
-
-    const msgLower = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // remove acentos pra facilitar match
-
-    let resposta = "";
-    let categoriaEncontrada = false;
-
-    // --- CAMADA 1: INTERAÇÕES HUMANAS (prioridade alta, sem web) ---
-
-    // Saudação
-    if (msgLower.match(/^(oi|ola|olá|salve|e ?aí|opa|fala|bom ?dia|boa ?tarde|boa ?noite)/)) {
-        resposta = sorteio(interacoesLivres.saudacoes);
-        categoriaEncontrada = true;
-    }
-    // Status / como vai
-    else if (msgLower.includes("beleza") || msgLower.includes("tranquilo") || msgLower.includes("tudo bem") || msgLower.includes("como vai") || msgLower.includes("como ta")) {
-        resposta = sorteio(interacoesLivres.status);
-        categoriaEncontrada = true;
-    }
-    // Despedida
-    else if (msgLower.includes("valeu") || msgLower.includes("tchau") || msgLower.includes("obrigado") || msgLower.includes("flw") || msgLower.includes("fui")) {
-        resposta = sorteio(interacoesLivres.despedidas);
-        categoriaEncontrada = true;
-    }
-    // Academia
-    else if (msgLower.includes("academia") || msgLower.includes("malhar") || msgLower.includes("treino") || msgLower.includes("supino") || msgLower.includes("perna") || msgLower.includes("gains")) {
-        resposta = sorteio(interacoesLivres.academia);
-        categoriaEncontrada = true;
-    }
-    // Política
-    else if (msgLower.includes("política") || msgLower.includes("governo") || msgLower.includes("lula") || msgLower.includes("bolsonaro") || msgLower.includes("eleição") || msgLower.includes("presidente")) {
-        resposta = sorteio(interacoesLivres.politica);
-        categoriaEncontrada = true;
-    }
-    // Hora de dormir
-    else if (msgLower.includes("dormir") || msgLower.includes("sono") || msgLower.includes("boa noite") || msgLower.includes("vou deitar") || msgLower.includes("apagar")) {
-        resposta = sorteio(interacoesLivres.horaDeDormir);
-        categoriaEncontrada = true;
-    }
-    // Saúde
-    else if (msgLower.includes("saúde") || msgLower.includes("doente") || msgLower.includes("dor") || msgLower.includes("médico") || msgLower.includes("imunidade") || msgLower.includes("covid")) {
-        resposta = sorteio(interacoesLivres.saude);
-        categoriaEncontrada = true;
-    }
-    // Carro
-    else if (msgLower.includes("carro") || msgLower.includes("moto") || msgLower.includes("veículo") || msgLower.includes("gasolina") || msgLower.includes("pneu") || msgLower.includes("motor")) {
-        resposta = sorteio(interacoesLivres.carro);
-        categoriaEncontrada = true;
-    }
-    // Xingamento / raiva (detecta palavrões comuns)
-    else if (msgLower.match(/porra|caralho|puta merda|filho da puta|merda|foda-se/)) {
-        resposta = sorteio(interacoesLivres.xingamento);
-        categoriaEncontrada = true;
-    }
-
-    // --- CAMADA 2: FALLBACK COM BUSCA NA WEB ---
-    if (!categoriaEncontrada) {
-        const idTemp = "ai-" + Date.now();
-        adicionarBolha("Peraí mano, deixa eu pesquisar isso direito... 🌐", 'ai', idTemp);
-
-        const busca = await buscarNaWeb(texto);
-        if (busca) {
-            resposta = `Se liga no que eu achei, mano:\n\n**\( {busca.t.toUpperCase()}**\n\n \){busca.d}\n\nÉ isso aí! Quer aprofundar mais? 🚀`;
-        } else {
-            resposta = "Não achei nada muito certeiro sobre isso agora, mano. Mas fala mais que eu tento ajudar do meu jeito! 👊 O que cê quer saber mesmo?";
-        }
-
-        document.getElementById(idTemp).innerText = resposta;
-        chatBox.scrollTop = chatBox.scrollHeight;
-        return;
-    }
-
-    // Resposta normal (interação humana)
+// Despedida
+["valeu", "tchau", "obrigado", "flw", "fui", "até mais", "brigado", "vlw", "obg", "valeu mano", "tmj", "tamo junto", "fui nessa"]    // Resposta normal (interação humana)
     setTimeout(() => {
         adicionarBolha(resposta, 'ai');
     }, 400 + Math.random() * 600); // tempo aleatório 0.4\~1s pra parecer mais humano
@@ -172,3 +34,69 @@ function adicionarBolha(txt, tipo, id = null) {
 
 btn.onclick = (e) => { e.preventDefault(); processarNexus(); };
 input.onkeypress = (e) => { if (e.key === 'Enter') { e.preventDefault(); processarNexus(); } };
+
+    // Função auxiliar pra detectar se TEM alguma dessas palavras (case insensitive + flexível)
+function temQualquer(palavrasArray) {
+    return palavrasArray.some(palavra => 
+        msgLower.includes(palavra)
+    );
+}
+
+// Agora as condições ficam assim (ordem importante: mais urgente/única primeiro)
+
+let categoriaEncontrada = false;
+let resposta = "";
+
+// 1. Xingamento / raiva (prioridade máxima pra desarmar)
+if (temQualquer(["porra", "caralho", "pqp", "kct", "tnc", "vsf", "puta merda", "filho da puta", "foda-se", "merda", "desgraça", "viado", "bosta"])) {
+    resposta = sorteio(interacoesLivres.xingamento);
+    categoriaEncontrada = true;
+}
+
+// 2. Sono / boa noite / dormir (pessoas falam isso no final do dia)
+else if (temQualquer(["dormir", "sono", "boa noite", "vou deitar", "vou dormir", "tô com sono", "apagar", "boa noite mano", "tchau vou nessa"])) {
+    resposta = sorteio(interacoesLivres.horaDeDormir);
+    categoriaEncontrada = true;
+}
+
+// 3. Saúde / dor / médico
+else if (temQualquer(["saúde", "doendo", "dor", "doente", "médico", "tô mal", "tô ruim", "imunidade", "remédio", "tô sentindo", "covid", "gripe"])) {
+    resposta = sorteio(interacoesLivres.saude);
+    categoriaEncontrada = true;
+}
+
+// 4. Academia / treino / gains
+else if (temQualquer(["academia", "malhar", "treino", "supino", "perna", "peito", "costas", "ombro", "bíceps", "tríceps", "agachamento", "gains", "shape", "bulk", "cut", "whey", "creatina", "proteína", "musculação"])) {
+    resposta = sorteio(interacoesLivres.academia);
+    categoriaEncontrada = true;
+}
+
+// 5. Carro / veículo
+else if (temQualquer(["carro", "moto", "veículo", "gasolina", "pneu", "motor", "oleo", "escapamento", "som no talo", "tá caro"])) {
+    resposta = sorteio(interacoesLivres.carro);
+    categoriaEncontrada = true;
+}
+
+// 6. Política (deixar por último porque é polêmico e menos frequente)
+else if (temQualquer(["política", "governo", "lula", "bolsonaro", "eleição", "presidente", "direita", "esquerda", "voto"])) {
+    resposta = sorteio(interacoesLivres.politica);
+    categoriaEncontrada = true;
+}
+
+// 7. Status / como vai (bem genérico, colocar perto do final)
+else if (temQualquer(["beleza", "tranquilo", "tudo bem", "como vai", "como tá", "como ta", "cm vc ta", "e tu", "e aí beleza", "de boa", "na paz"])) {
+    resposta = sorteio(interacoesLivres.status);
+    categoriaEncontrada = true;
+}
+
+// 8. Saudação (último porque quase tudo começa com saudação)
+else if (temQualquer(["oi", "olá", "ola", "e aí", "salve", "opa", "fala", "bom dia", "boa tarde", "boa noite"])) {
+    resposta = sorteio(interacoesLivres.saudacoes);
+    categoriaEncontrada = true;
+}
+
+// 9. Despedida
+else if (temQualquer(["valeu", "tchau", "obrigado", "flw", "fui", "até mais", "brigado", "vlw"])) {
+    resposta = sorteio(interacoesLivres.despedidas);
+    categoriaEncontrada = true;
+}
