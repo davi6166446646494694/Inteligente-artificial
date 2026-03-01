@@ -3,107 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus AI | Future Interface</title>
+    <title>Nexus AI | Desktop Interface</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #050507;
             --glass: rgba(255, 255, 255, 0.03);
-            --glass-hover: rgba(255, 255, 255, 0.08);
             --border: rgba(255, 255, 255, 0.1);
             --accent: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --text: #e2e8f0;
         }
 
-        * {
+        /* Reset para travar a tela e não rolar o corpo da página */
+        body, html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            height: 100%;
+            overflow: hidden; /* Impede o scroll do navegador */
+            background: #0a0a0c;
             font-family: 'Inter', sans-serif;
+            color: white;
         }
 
-        body {
-            background: radial-gradient(circle at top right, #1a1a2e, #050507);
-            color: var(--text);
-            height: 100vh;
+        .app-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            height: 100vh; /* Ocupa exatamente a altura da tela */
+            width: 100vw;
         }
 
-        /* Container Principal */
-        .app-shell {
-            display: flex;
-            width: 95vw;
-            height: 90vh;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Sidebar */
+        /* Sidebar fixa */
         .sidebar {
             width: 280px;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0,0,0,0.4);
             border-right: 1px solid var(--border);
-            padding: 24px;
             display: flex;
             flex-direction: column;
+            padding: 20px;
         }
 
-        .logo {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 40px;
-            letter-spacing: -1px;
-        }
-
-        .logo span { color: #818cf8; }
-
-        .nav-item {
-            padding: 12px 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-bottom: 8px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-item:hover { background: var(--glass-hover); }
-        .nav-item.active { background: var(--glass-hover); border: 1px solid var(--border); }
-
-        /* Área do Chat */
-        .chat-main {
+        /* Área Principal */
+        .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            position: relative;
+            background: radial-gradient(circle at center, #111118, #050507);
         }
 
-        .chat-header {
-            padding: 20px 40px;
+        /* Cabeçalho */
+        .header {
+            height: 60px;
             border-bottom: 1px solid var(--border);
             display: flex;
+            align-items: center;
+            padding: 0 30px;
             justify-content: space-between;
+        }
+
+        /* O PULO DO GATO: A área de mensagens que rola sozinha */
+        .messages-container {
+            flex: 1; /* Ocupa todo o espaço restante */
+            overflow-y: auto; /* Só aqui terá scroll */
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Scrollbar estilizada (fina e elegante) */
+        .messages-container::-webkit-scrollbar { width: 6px; }
+        .messages-container::-webkit-scrollbar-thumb { 
+            background: var(--border); 
+            border-radius: 10px; 
+        }
+
+        /* Bolhas */
+        .msg { max-width: 70%; padding: 15px 20px; border-radius: 15px; line-height: 1.6; }
+        .ai { background: var(--glass); border: 1px solid var(--border); align-self: flex-start; }
+        .user { background: #6366f1; align-self: flex-end; }
+
+        /* Rodapé fixo com o Input */
+        .input-section {
+            padding: 20px 40px 30px;
+            background: linear-gradient(transparent, #050507);
+        }
+
+        .input-box {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 10px 15px;
+            display: flex;
             align-items: center;
         }
 
-        .messages {
+        input {
             flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            font-size: 16px;
+            padding: 10px;
         }
 
+        .send-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <h2 style="font-size: 1.2rem; margin-bottom: 30px;">Nexus<span>AI</span></h2>
+            <div style="color: #666; font-size: 0.8rem; margin-bottom: 10px;">HISTÓRICO</div>
+            <div style="background: var(--glass); padding: 10px; border-radius: 8px; font-size: 0.9rem;">Chat de hoje...</div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <span style="color: #818cf8;">● GPT-4 Online</span>
+                <button style="background:none; border: 1px solid var(--border); color: white; border-radius: 5px; padding: 5px 10px; cursor: pointer;">Limpar</button>
+            </header>
+
+            <div class="messages-container" id="chat-box">
+                <div class="msg ai">Olá! Esta interface foi otimizada para ocupar 100% da tela do seu PC sem transbordar. Pode mandar mensagens longas!</div>
+            </div>
+
+            <div class="input-section">
+                <div class="input-box">
+                    <input type="text" id="user-input" placeholder="Pergunte algo ao Nexus...">
+                    <button class="send-btn" id="send-btn">Enviar</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const input = document.getElementById('user-input');
+        const btn = document.getElementById('send-btn');
+
+        function send() {
+            if(!input.value) return;
+            
+            // User Message
+            const u = document.createElement('div');
+            u.className = 'msg user';
+            u.innerText = input.value;
+            chatBox.appendChild(u);
+            
+            const text = input.value;
+            input.value = '';
+
+            // Auto-scroll para o final toda vez que envia
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Fake AI Response
+            setTimeout(() => {
+                const a = document.createElement('div');
+                a.className = 'msg ai';
+                a.innerText = "Recebi sua mensagem: '" + text + "'. Como posso ajudar mais?";
+                chatBox.appendChild(a);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 600);
+        }
+
+        btn.onclick = send;
+        input.onkeypress = (e) => { if(e.key === 'Enter') send(); };
+    </script>
+</body>
+</html>
         /* Scrollbar Customizada */
         .messages::-webkit-scrollbar { width: 6px; }
         .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
