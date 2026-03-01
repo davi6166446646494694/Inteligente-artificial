@@ -1,109 +1,42 @@
-/**
- * CONFIGURAÃ‡Ã•ES DA IA
- * Substitua pelos dados da sua API (OpenAI, Anthropic, etc)
- */
-const CONFIG = {
-    apiKey: 'SUA_CHAVE_DE_API_AQUI', // âš ï¸ MUITO IMPORTANTE: Proteja esta chave!
-    endpoint: 'https://api.openai.com/v1/chat/completions', // Endpoint exemplo
-    model: 'gpt-3.5-turbo' // Modelo padrÃ£o
+// banco_de_dados.js
+
+const bancoSaudacoes = {
+    // Gatilhos que a IA deve reconhecer
+    entradas: ["oi", "olá", "bom dia", "boa tarde", "boa noite", "e aí", "opa"],
+
+    // Respostas possíveis para variar a interação
+    respostas: [
+        "Olá! Como posso ajudar você hoje?",
+        "Oi! Tudo bem por aqui. E com você?",
+        "Opa! Em que posso ser útil?",
+        "Saudações! Sou sua assistente virtual. O que vamos fazer agora?"
+    ],
+
+    // Função para selecionar uma resposta aleatória
+    gerarResposta() {
+        const index = Math.floor(Math.random() * this.respostas.length);
+        return this.respostas[index];
+    }
 };
 
-// Elementos do DOM (HTML)
-const chatOutput = document.getElementById('chat-output');
-const userInput = document.getElementById('user-input');
-const sendButton = document.getElementById('send-btn');
+// Lógica de processamento simples
+function processarSaudacao(mensagemUsuario) {
+    const mensagemFormatada = mensagemUsuario.toLowerCase().trim();
 
-// Evento de clique no botÃ£o "Enviar"
-sendButton.addEventListener('click', sendMessage);
+    // Verifica se a mensagem contém algum dos gatilhos
+    const encontrouGatilho = bancoSaudacoes.entradas.some(gatilho => 
+        mensagemFormatada.includes(gatilho)
+    );
 
-// Evento para enviar ao pressionar "Enter"
-userInput.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
-});
-
-/**
- * FunÃ§Ã£o principal para enviar a mensagem
- */
-async function sendMessage() {
-    const message = userInput.value.trim();
-    
-    if (message === "") return;
-
-    // 1. Adicionar sua mensagem na tela
-    addMessageToScreen('VocÃª', message);
-    userInput.value = ''; // Limpar input
-
-    // 2. Adicionar indicador de "escrevendo..."
-    const loadingId = addMessageToScreen('IA', 'Pensando...', true);
-
-    try {
-        // 3. Chamar a API
-        const response = await callAIAPI(message);
-        
-        // 4. Remover o "Pensando..." e mostrar a resposta
-        removeMessage(loadingId);
-        addMessageToScreen('IA', response);
-
-    } catch (error) {
-        console.error(error);
-        removeMessage(loadingId);
-        addMessageToScreen('Erro', 'NÃ£o consegui acessar a IA. Verifique sua chave de API.');
+    if (encontrouGatilho) {
+        return bancoSaudacoes.gerarResposta();
+    } else {
+        return "Desculpe, ainda estou aprendendo. Pode repetir de outra forma?";
     }
 }
 
-/**
- * FunÃ§Ã£o que conversa com a API (Backend/AI)
- */
-async function callAIAPI(userMessage) {
-    // VerificaÃ§Ã£o de seguranÃ§a bÃ¡sica
-    if (CONFIG.apiKey === 'SUA_CHAVE_DE_API_AQUI') {
-        throw new Error("Configure a API Key no cÃ³digo!");
-    }
-
-    const response = await fetch(CONFIG.endpoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${CONFIG.apiKey}`
-        },
-        body: JSON.stringify({
-            model: CONFIG.model,
-            messages: [
-                { role: "system", content: "VocÃª Ã© um assistente Ãºtil." },
-                { role: "user", content: userMessage }
-            ]
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error(`Erro da API: ${response.status}`);
-    }
-
-    const data = await response.json();
-    // A estrutura da resposta varia conforme o provedor (OpenAI vs Anthropic vs Google)
-    // Aqui estamoså‡è®¾ formato OpenAI:
-    return data.choices[0].message.content;
-}
-
-/**
- * FunÃ§Ãµes de Interface (UI)
- */
-function addMessageToScreen(sender, text, isLoading = false) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message');
-    messageDiv.classList.add(sender === 'VocÃª' ? 'user-msg' : 'ai-msg');
-    
-    // Se for ID de loading, marcamos para poder remover depois
-    if (isLoading) {
-        messageDiv.id = 'loading-msg';
-        messageDiv.classList.add('loading');
-    }
-
-    const strong = document.createElement('strong');
-    strong.innerText = sender + ": ";
-    
+// Teste rápido
+console.log(processarSaudacao("Oi, tudo bem?"));
     const span = document.createElement('span');
     span.innerText = text;
 
