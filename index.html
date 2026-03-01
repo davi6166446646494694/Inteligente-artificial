@@ -3,88 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus AI | Mobile Optimized</title>
+    <title>Nexus AI | Full View</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #050507;
-            --glass: rgba(255, 255, 255, 0.05);
+            --glass: rgba(255, 255, 255, 0.07);
             --border: rgba(255, 255, 255, 0.1);
             --accent: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body, html {
             height: 100%;
             background-color: var(--bg);
             color: white;
-            overflow: hidden; /* Trava o scroll da página toda */
+            overflow: hidden; /* Impede o scroll torto da página */
         }
 
-        .app-container {
+        /* Container Principal com Scroll Horizontal para o Histórico */
+        .wrapper {
             display: flex;
-            flex-direction: column; /* No celular, tudo fica em coluna */
+            width: 140vw; /* 40vw para o histórico + 100vw para o chat */
             height: 100vh;
-            width: 100%;
-            max-width: 412px; /* Força o DPI que você pediu */
-            margin: 0 auto;  /* Centraliza na tela se o monitor for maior */
-            border-left: 1px solid var(--border);
+            transition: transform 0.3s ease;
+            transform: translateX(-40vw); /* Começa mostrando só o chat */
+        }
+
+        /* Se estiver aberto, move para mostrar o histórico */
+        .wrapper.open { transform: translateX(0); }
+
+        /* MENU LATERAL (HISTÓRICO) */
+        .sidebar {
+            width: 40vw;
+            height: 100%;
+            background: #0f0f13;
             border-right: 1px solid var(--border);
+            padding: 20px;
         }
 
-        /* Cabeçalho compacto */
-        .header {
-            padding: 15px;
-            background: rgba(0,0,0,0.5);
-            border-bottom: 1px solid var(--border);
+        /* ÁREA DO CHAT (OCUPA A TELA CHEIA) */
+        .chat-section {
+            width: 100vw;
+            height: 100%;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            position: relative;
         }
 
-        /* Área de Chat com scroll independente */
+        .header {
+            height: 60px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,0.3);
+        }
+
+        .menu-btn {
+            background: var(--glass);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        /* CONTEÚDO DAS MENSAGENS */
         .messages-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 15px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            background: radial-gradient(circle at top, #111118, #050507);
         }
 
         .msg {
             max-width: 85%;
             padding: 12px 16px;
             border-radius: 18px;
-            font-size: 15px;
+            font-size: 16px;
             line-height: 1.4;
-            word-wrap: break-word; /* Evita que o texto saia da bolha */
         }
 
-        .ai { background: var(--glass); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .user { background: #6366f1; align-self: flex-end; border-bottom-right-radius: 4px; color: white; }
+        .ai { background: var(--glass); border: 1px solid var(--border); align-self: flex-start; }
+        .user { background: #6366f1; align-self: flex-end; }
 
-        /* Rodapé de Input - Fixado no fundo */
+        /* INPUT FIXO NO RODAPÉ */
         .input-area {
-            padding: 15px;
-            background: #0a0a0c;
+            padding: 20px;
+            background: var(--bg);
             border-top: 1px solid var(--border);
         }
 
         .input-box {
             display: flex;
-            align-items: center;
-            background: rgba(255,255,255,0.07);
-            border-radius: 25px;
-            padding: 5px 5px 5px 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 30px;
+            padding: 5px 5px 5px 20px;
             border: 1px solid var(--border);
         }
 
@@ -95,15 +114,78 @@
             color: white;
             outline: none;
             font-size: 16px;
-            height: 40px;
-            min-width: 0; /* Evita que o input empurre o botão pra fora */
         }
 
         .send-btn {
             background: var(--accent);
             border: none;
             color: white;
-            width: 40px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper" id="wrapper">
+        <aside class="sidebar">
+            <h3 style="font-size: 14px; margin-bottom: 20px; color: #666;">HISTÓRICO</h3>
+            <div style="font-size: 13px; opacity: 0.7;">Conversa Alpha</div>
+        </aside>
+
+        <main class="chat-section">
+            <header class="header">
+                <button class="menu-btn" id="toggle-btn">☰ Histórico</button>
+                <span style="font-weight: 600;">Nexus AI</span>
+            </header>
+
+            <div class="messages-container" id="chat-box">
+                <div class="msg ai">O chat agora está em tela cheia (100% da largura)! Clique em "Histórico" ou arraste para ver o menu lateral.</div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-box">
+                    <input type="text" id="user-input" placeholder="Escreva aqui..." autocomplete="off">
+                    <button class="send-btn" id="send-btn">↑</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const wrapper = document.getElementById('wrapper');
+        const toggleBtn = document.getElementById('toggle-btn');
+        const input = document.getElementById('user-input');
+        const btn = document.getElementById('send-btn');
+        const chatBox = document.getElementById('chat-box');
+
+        // Abre/Fecha o histórico
+        toggleBtn.onclick = () => {
+            wrapper.classList.toggle('open');
+        };
+
+        function send() {
+            if(!input.value.trim()) return;
+            
+            const u = document.createElement('div');
+            u.className = 'msg user';
+            u.innerText = input.value;
+            chatBox.appendChild(u);
+            
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Se o histórico estiver aberto ao enviar, ele fecha sozinho pra você ver a resposta
+            wrapper.classList.remove('open');
+        }
+
+        btn.onclick = send;
+        input.onkeypress = (e) => { if(e.key === 'Enter') send(); };
+    </script>
+</body>
+</html>
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
