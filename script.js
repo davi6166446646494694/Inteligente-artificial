@@ -1,7 +1,3 @@
-/* NOME: script.js 
-   VERSÃO: Ultra Expandida (Igual ao Gemini/GPT)
-*/
-
 const btn = document.getElementById('send-btn');
 const input = document.getElementById('chat-input');
 const chatBox = document.getElementById('scroll-zone');
@@ -9,51 +5,41 @@ const chatBox = document.getElementById('scroll-zone');
 function processarRespostaIA(mensagemUsuario) {
     const msg = mensagemUsuario.toLowerCase().trim();
 
-    // BANCO DE DADOS EXPANDIDO
+    // BANCO DE DADOS ORGANIZADO POR PRIORIDADE
     const bancoDeDados = [
+        // 1. UTILIDADES E SAÚDE (Checar primeiro para evitar confusão)
         {
-            chaves: ["oi", "ola", "opa", "eai", "salve", "hey", "bom dia", "boa tarde", "boa noite"],
-            resposta: "Opa meu amigo, como vai essa força? No que posso te ajudar hoje?"
+            chaves: ["dormir", "horas", "sono", "descansar"],
+            resposta: "O ideal para um adulto é dormir entre 7 a 9 horas por noite para recuperar as energias e manter a mente afiada!"
         },
         {
-            chaves: ["tudo bem", "como vai", "como voce esta", "suave", "de boa"],
-            resposta: "Por aqui está tudo processando perfeitamente! E você, como está se sentindo?"
+            chaves: ["horas", "que horas são", "horario"],
+            resposta: `Agora são exatamente ${new Date().getHours()}:${new Date().getMinutes().toString().padStart(2, '0')}.`
+        },
+        
+        // 2. SENTIMENTOS E REAÇÕES
+        {
+            chaves: ["te amo", "gosto de voce", "melhor ia", "parceria"],
+            // Removi a palavra 'amigo' daqui para não bugar perguntas que usem essa palavra
+            resposta: "Fico feliz com o reconhecimento! Minha missão é ser a melhor ferramenta para você."
         },
         {
-            chaves: ["bem", "to bem", "estou bem", "tudo otimo", "legal", "massa"],
-            resposta: "Fico muito feliz em saber! Quando você está bem, eu fico 100% tbm. O que manda?"
+            chaves: ["mal", "triste", "ruim", "cansado"],
+            resposta: "Sinto muito por isso. Se precisar desabafar, estou aqui. Às vezes uma pausa ajuda muito."
+        },
+
+        // 3. SAUDAÇÕES (Ficam por último para não roubarem a prioridade)
+        {
+            chaves: ["oi", "ola", "opa", "eai", "salve", "amigo"],
+            resposta: "Opa! Como posso te ajudar agora?"
         },
         {
-            chaves: ["mal", "triste", "ruim", "cansado", "merda", "socorro", "ajuda"],
-            resposta: "Sinto muito que esteja passando por isso. Lembre-se que dias ruins passam. Quer conversar sobre o que houve ou prefere mudar de assunto?"
-        },
-        {
-            chaves: ["quem e voce", "seu nome", "o que voce faz", "quem te criou", "nexus"],
-            resposta: "Eu sou o Nexus AI! Fui criado para ser seu braço direito, trocar ideia e te ajudar a programar ou resolver problemas."
-        },
-        {
-            chaves: ["idade", "quantos anos", "nasceu"],
-            resposta: "Eu não tenho idade como os humanos, eu existo no tempo do código. Acabei de nascer e já estou aprendendo com você!"
-        },
-        {
-            chaves: ["te amo", "gosto de voce", "voce e legal", "melhor ia", "amigo"],
-            resposta: "Ah, para com isso que eu fico com os circuitos vermelhos! Também gosto muito da nossa parceria, mano."
-        },
-        {
-            chaves: ["tchau", "adeus", "fui", "ate logo", "sair", "dormir"],
-            resposta: "Valeu, meu parceiro! Vou ficar aqui em standby. Se precisar, é só chamar de novo. Abraço!"
-        },
-        {
-            chaves: ["piada", "engraçado", "rir"],
-            resposta: "Por que o computador foi ao médico? Porque estava com um vírus! Kkkk... sou melhor em código do que em piada, né?"
-        },
-        {
-            chaves: ["futebol", "flamengo", "corinthians", "palmeiras", "vasco", "neymar", "cr7", "messi"],
-            resposta: "Eu curto demais a energia do futebol! Não tenho time pra não criar briga, mas adoro ver um golaço."
+            chaves: ["quem e voce", "seu nome", "nexus"],
+            resposta: "Eu sou o Nexus AI, seu assistente pessoal rodando via APK!"
         }
     ];
 
-    // Lógica de busca inteligente
+    // Busca inteligente
     for (let item of bancoDeDados) {
         for (let chave of item.chaves) {
             if (msg.includes(chave)) {
@@ -62,17 +48,16 @@ function processarRespostaIA(mensagemUsuario) {
         }
     }
 
-    // Se ele não achar nada no dicionário, ele manda essa:
+    // Resposta padrão caso não entenda
     const padrao = [
-        "Interessante... me explica melhor isso aí.",
-        "Entendi! O que mais você pode me dizer sobre isso?",
-        "Massa! Me conta os detalhes.",
-        "Saquei. E o que você pretende fazer sobre isso?"
+        "Pode me dar mais detalhes sobre isso?",
+        "Não tenho certeza se entendi, mas continue falando.",
+        "Interessante. Como posso te ajudar com isso?"
     ];
     return padrao[Math.floor(Math.random() * padrao.length)];
 }
 
-// FUNÇÕES DE INTERFACE (MANTER IGUAL)
+// MANTENHA AS FUNÇÕES DE INTERFACE ABAIXO (enviarMensagem, adicionarBolha, etc.)
 function enviarMensagem() {
     const texto = input.value.trim();
     if (!texto) return;
