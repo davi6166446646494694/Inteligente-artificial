@@ -1,110 +1,24 @@
-// Função auxiliar (já deve ter, mas reforçando)
-function temQualquer(palavrasArray) {
-    return palavrasArray.some(palavra => msgLower.includes(palavra.toLowerCase()));
-}
+// ... seu dicionário antigo ...
 
-// Verificação anti-loop: não processar a mesma mensagem de novo
-if (msg.trim() === '' || msg.toLowerCase().includes("recebi! o scroll automático")) {
-    // Ignora mensagens de confirmação repetidas ou vazias
-    return;
-}
+interacoesLivres = {
+    // ... mantenha os antigos ...
 
-// 1. Xingamento / raiva pesada (prioridade máxima)
-if (temQualquer(["porra", "caralho", "pqp", "kct", "tnc", "vsf", "puta merda", "filho da puta", "foda-se", "merda", "desgraça", "viado", "bosta", "fdp", "putaria", "ta foda", "to puto", "tô puto"])) {
-    resposta = sorteio(interacoesLivres.xingamento);
-    categoriaEncontrada = true;
-}
+    cumprimentoEmocao: [  // oi + emoção / motivação
+        "E aí, Maria! Beleza pura? Tô no gás total aqui, e tu como tá de vibe hoje? 😎",
+        "Opa, minha parceira! Tudo sussa? Manda o papo que eu tô ligado 100%, cheio de energia! 💥",
+        "Salve, rainha! Como tá o rolê aí em PE? Tô pronto pra trocar ideia com emoção total 🔥",
+        "Fala, monstra! Tranquilo ou na bad? Desabafa que o Nexus ouve e motiva! 👊",
+        "E aí, tudo na paz? Bora botar pra quebrar no papo de hoje? Tô animadão! 🚀"
+    ],
 
-// 2. Término / sofrimento amoroso
-else if (temQualquer(["terminei", "término", "superar", "superar ex", "sofrendo", "chifre", "traição"])) {
-    resposta = sorteio(interacoesLivres.termino);
-    categoriaEncontrada = true;
-}
-
-// 3. Ansiedade / surto / crise
-else if (temQualquer(["ansiedade", "ansioso", "surtando", "surtei", "crise", "ataque", "pânico", "depressão", "tô mal demais"])) {
-    resposta = sorteio(interacoesLivres.ansiedade);
-    categoriaEncontrada = true;
-}
-
-// 4. Saúde / dor / médico
-else if (temQualquer(["saúde", "dor", "doendo", "doente", "médico", "tô mal", "remédio", "gripe", "febre", "covid", "dor de cabeça", "pressão"])) {
-    resposta = sorteio(interacoesLivres.saude);
-    categoriaEncontrada = true;
-}
-
-// 5. Namoro / crush / relacionamento
-else if (temQualquer(["namoro", "namorada", "namorado", "crush", "ficante", "ficar com", "ciúmes", "ciumento", "possessivo"])) {
-    resposta = sorteio(interacoesLivres.namoro);
-    categoriaEncontrada = true;
-}
-
-// 6. Fome / comida / delivery
-else if (temQualquer(["fome", "comer", "comida", "rango", "almoço", "janta", "lanche", "pizza", "ifood", "delivery"])) {
-    resposta = sorteio(interacoesLivres.comida);
-    categoriaEncontrada = true;
-}
-
-// 7. Bebida / balada / ressaca
-else if (temQualquer(["beber", "cerveja", "breja", "pinga", "balada", "festa", "chapado", "ressaca"])) {
-    resposta = sorteio(interacoesLivres.bebida);
-    categoriaEncontrada = true;
-}
-
-// 8. Sono / preguiça / insônia
-else if (temQualquer(["sono", "dormir", "boa noite", "vou deitar", "tô com sono", "preguiça", "insônia", "não durmo", "tô morto", "cama"])) {
-    resposta = sorteio(interacoesLivres.sono);
-    categoriaEncontrada = true;
-}
-
-// 9. Sextou / fim de semana / feriado
-else if (temQualquer(["sextou", "fim de semana", "sábado", "domingo", "feriado", "ponte", "carnaval"])) {
-    resposta = sorteio(interacoesLivres.fds);
-    categoriaEncontrada = true;
-}
-
-// 10. Trabalho / trampo / chefe
-else if (temQualquer(["trampo", "trabalho", "chefe", "emprego", "demissão", "home office", "hora extra", "freela", "bico"])) {
-    resposta = sorteio(interacoesLivres.trabalho);
-    categoriaEncontrada = true;
-}
-
-// 11. Dinheiro / grana / dívida
-else if (temQualquer(["dinheiro", "grana", "salário", "dívida", "pix", "conta", "fatura", "renda extra"])) {
-    resposta = sorteio(interacoesLivres.dinheiro);
-    categoriaEncontrada = true;
-}
-
-// 12. Futebol
-else if (temQualquer(["futebol", "time", "jogo", "gol", "corinthians", "flamengo", "palmeiras"])) {
-    resposta = sorteio(interacoesLivres.futebol);
-    categoriaEncontrada = true;
-}
-
-// 13. Jogos / videogame
-else if (temQualquer(["jogo", "free fire", "valorant", "fortnite", "lol", "ps5", "rank"])) {
-    resposta = sorteio(interacoesLivres.jogos);
-    categoriaEncontrada = true;
-}
-
-// 14. Filme / série / anime
-else if (temQualquer(["filme", "série", "netflix", "anime", "maratona", "spoiler"])) {
-    resposta = sorteio(interacoesLivres.filmes);
-    categoriaEncontrada = true;
-}
-
-// 15. Música / hit / playlist
-else if (temQualquer(["música", "funk", "sertanejo", "playlist", "show", "pagodinho"])) {
-    resposta = sorteio(interacoesLivres.musica);
-    categoriaEncontrada = true;
-}
-
-// 16. Memes / zoeira
-else if (temQualquer(["meme", "zoeira", "kkkk", "calabreso", "pdp", "troll"])) {
-    resposta = sorteio(interacoesLivres.memes);
-    categoriaEncontrada = true;
-}
-
+    mateProgEngCursos: [  // matemática, programação, engenharia, cursos/vestibular
+        "Mano, matemática, programação e engenharia são o futuro! Bora falar de curso, Enem, Sisu, IA, código ou cálculo? Qual o foco hoje? 📚💻",
+        "Tá na vibe de exatas? Respeito! Quer dica de curso gratuito, notícia de vestibular, programação em Python ou engenharia de software? Manda aí que eu ajudo full gains mentais! 🧠",
+        "Área pesada hein? Matemática + código + engenharia = grana e oportunidade. Tem notícia recente no G1 sobre isso? Posso checar ou te dar dica de onde estudar!",
+        "Cursos de TI, engenharia, ciência de dados... tá bombando! Quer saber de vagas na Univesp, UFU, ou como entrar em IA? Fala o que precisa!",
+        "Se for sobre vestibular, pós ou carreira em exatas, tô dentro. Bora planejar teu caminho? Qual matéria ou curso tá na mira?"
+    ]
+};
 // 17. Clima / calor / chuva
 else if (temQualquer(["calor", "chuva", "frio", "tempo", "tá quente"])) {
     resposta = sorteio(interacoesLivres.clima);
