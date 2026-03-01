@@ -86,9 +86,6 @@
       display: none; /* começa oculto */
     }
 
-    .mensagem-usuario { color: #4fc3f7; }
-    .mensagem-ia { color: #ffeb3b; }
-
     #botaoEnviar {
       display: none; /* começa oculto */
       padding: 10px 15px;
@@ -105,6 +102,135 @@
     #mensagem {
       margin-top: 10px;
       font-size: 14px;
+    }
+
+    /* ===== Balões de mensagem ===== */
+    .mensagem-usuario {
+      color: #4fc3f7;
+      text-align: right;
+      background: rgba(79, 195, 247, 0.2);
+      padding: 8px;
+      border-radius: 10px;
+      margin: 5px 0;
+    }
+
+    .mensagem-ia {
+      color: #ffeb3b;
+      text-align: left;
+      background: rgba(255, 235, 59, 0.2);
+      padding: 8px;
+      border-radius: 10px;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LOGIN ===== -->
+  <div class="container" id="loginContainer">
+    <h1>Bem-vindo!</h1>
+
+    <input type="text" id="gmail" placeholder="Digite seu Gmail">
+    <input type="password" id="senha" placeholder="Digite sua senha">
+
+    <button onclick="confirmarLogin()">Confirmar</button>
+    <p id="mensagem"></p>
+  </div>
+
+  <!-- ===== CHAT ===== -->
+  <div class="container" id="chatContainer" style="display:none;">
+    <h2>Chat IA</h2>
+    <div id="chat"></div>
+    <div>
+      <input type="text" id="entrada" placeholder="Digite algo...">
+      <button id="botaoEnviar" onclick="enviarMensagem()">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    /* ===== SISTEMA DE MENSAGENS ===== */
+    let mensagens = []; // armazena histórico
+
+    function atualizarChat() {
+      const chat = document.getElementById("chat");
+      chat.innerHTML = "";
+
+      mensagens.forEach(msg => {
+        const p = document.createElement("p");
+        p.textContent = msg.tipo === "usuario" ? `Você: ${msg.texto}` : `IA: ${msg.texto}`;
+        p.className = msg.tipo === "usuario" ? "mensagem-usuario" : "mensagem-ia";
+        chat.appendChild(p);
+      });
+
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function enviarMensagem() {
+      const entrada = document.getElementById("entrada");
+      const texto = entrada.value.trim();
+      if(!texto) return;
+
+      mensagens.push({ tipo: "usuario", texto });
+      atualizarChat();
+      entrada.value = "";
+
+      const respostaIA = gerarResposta(texto);
+      mensagens.push({ tipo: "ia", texto: respostaIA });
+      atualizarChat();
+    }
+
+    /* ===== LOGIN ===== */
+    function confirmarLogin() {
+      const gmail = document.getElementById('gmail').value;
+      const senha = document.getElementById('senha').value;
+      const mensagem = document.getElementById('mensagem');
+
+      if(gmail && senha){
+        mensagem.textContent = "Login bem-sucedido!";
+        mensagem.style.color = "green";
+
+        // Esconde login e mostra chat
+        document.getElementById('loginContainer').style.display = "none";
+        document.getElementById('chatContainer').style.display = "block";
+        document.getElementById('entrada').style.display = "inline-block";
+        document.getElementById('botaoEnviar').style.display = "inline-block";
+      } else {
+        mensagem.textContent = "Por favor, preencha todos os campos.";
+        mensagem.style.color = "red";
+      }
+    }
+
+    /* ===== BANCO DE PALAVRAS / RESPOSTAS ===== */
+    const banco = [
+      { palavras: ["oi", "opa"], respostas: ["Oi! Tudo bem?", "Opa! Como você tá?"] },
+      { palavras: ["tudo bem", "como você tá"], respostas: ["Tô bem 😎 e você?", "Estou ótimo!"] },
+      { palavras: ["seu nome", "quem é você"], respostas: ["Sou sua IA!", "Eu sou um chat criado por você 😄"] }
+      // você pode adicionar até 1000 objetos
+    ];
+
+    function gerarResposta(texto) {
+      texto = texto.toLowerCase();
+      let respostasPossiveis = [];
+
+      for (let item of banco) {
+        for (let palavra of item.palavras) {
+          if (texto.includes(palavra)) {
+            respostasPossiveis.push(...item.respostas);
+            break;
+          }
+        }
+      }
+
+      if (respostasPossiveis.length > 0) {
+        return respostasPossiveis[Math.floor(Math.random() * respostasPossiveis.length)];
+      }
+
+      return "Hmm... me conta mais sobre isso 🤔";
+    }
+  </script>
+
+</body>
+</html>      font-size: 14px;
     }
   </style>
 </head>
