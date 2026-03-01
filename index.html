@@ -2,99 +2,90 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus AI | Desktop Interface</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nexus AI | Mobile Optimized</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #050507;
-            --glass: rgba(255, 255, 255, 0.03);
+            --glass: rgba(255, 255, 255, 0.05);
             --border: rgba(255, 255, 255, 0.1);
             --accent: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
         }
 
-        /* Reset para travar a tela e não rolar o corpo da página */
-        body, html {
+        * {
             margin: 0;
             padding: 0;
-            height: 100%;
-            overflow: hidden; /* Impede o scroll do navegador */
-            background: #0a0a0c;
+            box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: var(--bg);
             color: white;
+            overflow: hidden; /* Trava o scroll da página toda */
         }
 
         .app-container {
             display: flex;
-            height: 100vh; /* Ocupa exatamente a altura da tela */
-            width: 100vw;
-        }
-
-        /* Sidebar fixa */
-        .sidebar {
-            width: 280px;
-            background: rgba(0,0,0,0.4);
+            flex-direction: column; /* No celular, tudo fica em coluna */
+            height: 100vh;
+            width: 100%;
+            max-width: 412px; /* Força o DPI que você pediu */
+            margin: 0 auto;  /* Centraliza na tela se o monitor for maior */
+            border-left: 1px solid var(--border);
             border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
         }
 
-        /* Área Principal */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: radial-gradient(circle at center, #111118, #050507);
-        }
-
-        /* Cabeçalho */
+        /* Cabeçalho compacto */
         .header {
-            height: 60px;
+            padding: 15px;
+            background: rgba(0,0,0,0.5);
             border-bottom: 1px solid var(--border);
             display: flex;
-            align-items: center;
-            padding: 0 30px;
             justify-content: space-between;
+            align-items: center;
         }
 
-        /* O PULO DO GATO: A área de mensagens que rola sozinha */
+        /* Área de Chat com scroll independente */
         .messages-container {
-            flex: 1; /* Ocupa todo o espaço restante */
-            overflow-y: auto; /* Só aqui terá scroll */
-            padding: 40px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 15px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+            background: radial-gradient(circle at top, #111118, #050507);
         }
 
-        /* Scrollbar estilizada (fina e elegante) */
-        .messages-container::-webkit-scrollbar { width: 6px; }
-        .messages-container::-webkit-scrollbar-thumb { 
-            background: var(--border); 
-            border-radius: 10px; 
+        .msg {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.4;
+            word-wrap: break-word; /* Evita que o texto saia da bolha */
         }
 
-        /* Bolhas */
-        .msg { max-width: 70%; padding: 15px 20px; border-radius: 15px; line-height: 1.6; }
-        .ai { background: var(--glass); border: 1px solid var(--border); align-self: flex-start; }
-        .user { background: #6366f1; align-self: flex-end; }
+        .ai { background: var(--glass); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .user { background: #6366f1; align-self: flex-end; border-bottom-right-radius: 4px; color: white; }
 
-        /* Rodapé fixo com o Input */
-        .input-section {
-            padding: 20px 40px 30px;
-            background: linear-gradient(transparent, #050507);
+        /* Rodapé de Input - Fixado no fundo */
+        .input-area {
+            padding: 15px;
+            background: #0a0a0c;
+            border-top: 1px solid var(--border);
         }
 
         .input-box {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 10px 15px;
             display: flex;
             align-items: center;
+            background: rgba(255,255,255,0.07);
+            border-radius: 25px;
+            padding: 5px 5px 5px 15px;
+            border: 1px solid var(--border);
         }
 
         input {
@@ -104,153 +95,8 @@
             color: white;
             outline: none;
             font-size: 16px;
-            padding: 10px;
-        }
-
-        .send-btn {
-            background: var(--accent);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="app-container">
-        <aside class="sidebar">
-            <h2 style="font-size: 1.2rem; margin-bottom: 30px;">Nexus<span>AI</span></h2>
-            <div style="color: #666; font-size: 0.8rem; margin-bottom: 10px;">HISTÓRICO</div>
-            <div style="background: var(--glass); padding: 10px; border-radius: 8px; font-size: 0.9rem;">Chat de hoje...</div>
-        </aside>
-
-        <main class="main-content">
-            <header class="header">
-                <span style="color: #818cf8;">● GPT-4 Online</span>
-                <button style="background:none; border: 1px solid var(--border); color: white; border-radius: 5px; padding: 5px 10px; cursor: pointer;">Limpar</button>
-            </header>
-
-            <div class="messages-container" id="chat-box">
-                <div class="msg ai">Olá! Esta interface foi otimizada para ocupar 100% da tela do seu PC sem transbordar. Pode mandar mensagens longas!</div>
-            </div>
-
-            <div class="input-section">
-                <div class="input-box">
-                    <input type="text" id="user-input" placeholder="Pergunte algo ao Nexus...">
-                    <button class="send-btn" id="send-btn">Enviar</button>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        const chatBox = document.getElementById('chat-box');
-        const input = document.getElementById('user-input');
-        const btn = document.getElementById('send-btn');
-
-        function send() {
-            if(!input.value) return;
-            
-            // User Message
-            const u = document.createElement('div');
-            u.className = 'msg user';
-            u.innerText = input.value;
-            chatBox.appendChild(u);
-            
-            const text = input.value;
-            input.value = '';
-
-            // Auto-scroll para o final toda vez que envia
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // Fake AI Response
-            setTimeout(() => {
-                const a = document.createElement('div');
-                a.className = 'msg ai';
-                a.innerText = "Recebi sua mensagem: '" + text + "'. Como posso ajudar mais?";
-                chatBox.appendChild(a);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 600);
-        }
-
-        btn.onclick = send;
-        input.onkeypress = (e) => { if(e.key === 'Enter') send(); };
-    </script>
-</body>
-</html>
-        /* Scrollbar Customizada */
-        .messages::-webkit-scrollbar { width: 6px; }
-        .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-        /* Bolhas de Mensagem */
-        .msg {
-            display: flex;
-            gap: 16px;
-            max-width: 80%;
-            animation: slideUp 0.4s ease forwards;
-        }
-
-        .msg.user { align-self: flex-end; flex-direction: row-reverse; }
-
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 12px;
-            flex-shrink: 0;
-        }
-
-        .bubble {
-            padding: 14px 18px;
-            border-radius: 18px;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            line-height: 1.6;
-            font-size: 15px;
-        }
-
-        .user .bubble {
-            background: #6366f1;
-            border: none;
-            color: white;
-        }
-
-        /* Input de Texto */
-        .input-area {
-            padding: 30px 40px;
-            background: linear-gradient(to top, var(--bg), transparent);
-        }
-
-        .input-wrapper {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            padding: 6px 6px 6px 20px;
-            display: flex;
-            align-items: center;
-            transition: 0.3s;
-        }
-
-        .input-wrapper:focus-within {
-            border-color: #818cf8;
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            outline: none;
-            font-size: 15px;
+            height: 40px;
+            min-width: 0; /* Evita que o input empurre o botão pra fora */
         }
 
         .send-btn {
@@ -261,85 +107,69 @@
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            flex-shrink: 0; /* Garante que o botão não amasse */
         }
 
-        .send-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* Esconde a sidebar no Mobile para ganhar espaço */
+        .sidebar { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="app-shell">
-        <aside class="sidebar">
-            <div class="logo">Nexus<span>AI</span></div>
-            <div class="nav-item active">✦ Novo Chat</div>
-            <div class="nav-item">◔ Histórico</div>
-            <div class="nav-item">⚙ Configurações</div>
-        </aside>
+    <div class="app-container">
+        <header class="header">
+            <span style="font-weight: 600; font-size: 14px;">Nexus AI</span>
+            <span style="font-size: 12px; color: #818cf8;">● GPT-4</span>
+        </header>
 
-        <main class="chat-main">
-            <header class="chat-header">
-                <span style="font-size: 14px; color: #818cf8;">● Sistema Ativo</span>
-                <div style="background: var(--glass); padding: 4px 12px; border-radius: 20px; font-size: 12px; border: 1px solid var(--border);">v3.5 Turbo</div>
-            </header>
+        <div class="messages-container" id="chat-box">
+            <div class="msg ai">Opa! Ajustei o layout para 412 de largura. Agora o botão de enviar não some e o chat não corta. Pode testar!</div>
+        </div>
 
-            <div class="messages" id="chat-window">
-                <div class="msg">
-                    <div class="avatar">AI</div>
-                    <div class="bubble">Olá! Sou sua nova interface inteligente. Como posso ser útil hoje?</div>
-                </div>
+        <div class="input-area">
+            <div class="input-box">
+                <input type="text" id="user-input" placeholder="Mensagem..." autocomplete="off">
+                <button class="send-btn" id="send-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
             </div>
-
-            <div class="input-area">
-                <div class="input-wrapper">
-                    <input type="text" id="user-input" placeholder="Digite sua mensagem aqui..." autocomplete="off">
-                    <button class="send-btn" id="send-btn">↑</button>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
 
     <script>
+        const chatBox = document.getElementById('chat-box');
         const input = document.getElementById('user-input');
         const btn = document.getElementById('send-btn');
-        const chatWindow = document.getElementById('chat-window');
 
-        function addMessage(text, type) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `msg ${type}`;
-            
-            const avatar = type === 'user' ? '' : '<div class="avatar">AI</div>';
-            
-            msgDiv.innerHTML = `
-                ${avatar}
-                <div class="bubble">${text}</div>
-            `;
-            
-            chatWindow.appendChild(msgDiv);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
+        function sendMessage() {
+            const text = input.value.trim();
+            if(!text) return;
 
-        function handleSend() {
-            if (input.value.trim() === "") return;
+            // Add User Msg
+            const u = document.createElement('div');
+            u.className = 'msg user';
+            u.innerText = text;
+            chatBox.appendChild(u);
             
-            addMessage(input.value, 'user');
-            const val = input.value;
-            input.value = "";
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Simulação de resposta
+            // Resposta da IA
             setTimeout(() => {
-                addMessage("Entendido. Estou processando sua solicitação sobre '" + val + "'...", 'ai');
-            }, 800);
+                const a = document.createElement('div');
+                a.className = 'msg ai';
+                a.innerText = "Layout ajustado! O campo agora ocupa os 412px de largura perfeitamente.";
+                chatBox.appendChild(a);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 600);
         }
 
-        btn.onclick = handleSend;
-        input.onkeypress = (e) => { if(e.key === 'Enter') handleSend(); };
+        btn.onclick = sendMessage;
+        input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
     </script>
 </body>
 </html>
