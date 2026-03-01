@@ -3,43 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus AI | Premium Interface</title>
+    <title>NEXUS CORE | Inteligência Artificial</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="app-container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <button class="new-chat-btn">+ Novo Chat</button>
+    <div class="glow-bg"></div>
+
+    <div class="app-interface">
+        <aside class="sidebar-neon">
+            <div class="brand">
+                <div class="logo-core"></div>
+                <span>NEXUS v3.0</span>
             </div>
-            <div class="history-list" id="history-list">
-                <div class="history-item active">Conversa Atual</div>
-                </div>
+            
+            <button class="btn-new-chat" onclick="window.location.reload()">+ NOVO PROTOCOLO</button>
+            
+            <div class="history-container">
+                <p class="section-title">LOGS DE MEMÓRIA</p>
+                <div id="history-list" class="history-list">
+                    </div>
+            </div>
         </aside>
 
-        <main class="chat-wrapper">
-            <header class="chat-header">
-                <div class="status-indicator">
-                    <span class="dot"></span>
-                    <span id="status-text">NEXUS AI ONLINE</span>
+        <main class="main-chat">
+            <header class="top-bar">
+                <div class="system-status">
+                    <span class="pulse-ring"></span>
+                    <p>SISTEMA OPERACIONAL ATIVO</p>
                 </div>
+                <div class="user-profile">USER_ALPHA</div>
             </header>
 
-            <div id="chat-box" class="chat-box">
-                <div class="msg ai">Olá! Sou a Nexus. Estou pronta para ouvir ou ler o que você tem a dizer.</div>
+            <div id="chat-box" class="chat-display">
+                <div class="msg ai-msg">
+                    <span class="tag">SISTEMA</span>
+                    <p>Núcleo Nexus inicializado. Aguardando entrada de dados ou comando de voz.</p>
+                </div>
             </div>
 
-            <footer class="chat-footer">
-                <div class="input-container">
-                    <input type="text" id="user-input" placeholder="Pergunte qualquer coisa..." autocomplete="off">
-                    <div class="actions">
-                        <button class="icon-btn" id="mic-btn" title="Falar">🎤</button>
-                        <button class="send-btn" id="send-btn">↑</button>
-                    </div>
+            <div class="input-zone">
+                <div class="glass-input-box">
+                    <button id="mic-btn" class="ctrl-btn">🎤</button>
+                    <input type="text" id="user-input" placeholder="Digite um comando..." autocomplete="off">
+                    <button id="send-btn" class="send-trigger">ENVIAR</button>
                 </div>
-            </footer>
+            </div>
         </main>
     </div>
 
