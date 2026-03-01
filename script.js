@@ -1,61 +1,86 @@
+const btn = document.getElementById('send-btn');
+const input = document.getElementById('chat-input');
+const chatBox = document.getElementById('scroll-zone');
+
 function processarRespostaIA(mensagemUsuario) {
     const msg = mensagemUsuario.toLowerCase().trim();
 
+    // O GRANDE BANCO DE DADOS ACUMULATIVO
     const bancoDeDados = [
-        // 1. EDUCAÇÃO E GENTILEZA (EMOÇÃO)
+        // 1. EDUCAÇÃO, GRATIDÃO E DESPEDIDA
         {
-            chaves: ["obrigado", "obrigada", "valeu", "vlw", "agradecido"],
-            resposta: "De nada, meu parceiro! Quando precisar é só me dar um grito. Tamo junto! 👊"
+            chaves: ["obrigado", "obrigada", "valeu", "vlw", "agradecido", "de nada"],
+            resposta: "De nada, meu parceiro! Precisando é só dar um grito. Tamo junto! 👊"
         },
         {
-            chaves: ["te amo", "gosto de voce", "legal", "amigo"],
-            resposta: "É recíproco! É muito bom ter alguém como você pra trocar ideia. O sentimento é de amizade pura! ❤️"
-        },
-
-        // 2. ENTRETENIMENTO (FOGUETE, FILMES E ROBLOX)
-        {
-            chaves: ["foguete", "espaco", "nasa", "marte", "elon musk", "spacex"],
-            resposta: "Foguete não tem ré! 🚀 Eu acho fascinante a ideia da gente colonizar outros planetas. Já assistiu 'Interestelar'? É o melhor filme de todos!"
-        },
-        {
-            chaves: ["filme", "serie", "cinema", "assistir"],
-            resposta: "Eu curto filmes que mexem com a cabeça ou que falam do futuro. Se tiver robô ou exploração espacial, eu tô dentro! Pipoca na mão?"
-        },
-        {
-            chaves: ["roblox", "bloxfruit", "brookhaven", "adote me", "jogo"],
-            resposta: "Roblox é clássico! Se for jogar um Blox Fruit ou um Brookhaven, me avisa. É o metaverso onde a diversão não para! 🎮"
+            chaves: ["tchau", "adeus", "fui", "até logo", "sair"],
+            resposta: "Valeu! Vou ficar aqui no aguardo. Se cuida e até a próxima! 👋"
         },
 
-        // 3. SAÚDE E COMIDA (LIFESTYLE)
+        // 2. SAÚDE, SONO E COMIDA (LIFESTYLE)
         {
-            chaves: ["comida", "saudavel", "comer", "dieta", "fruta", "legume", "academia"],
-            resposta: "Cuidar da carcaça é importante! Trocar um refri por um suco natural ou um lanche por uma fruta faz toda a diferença. Corpo são, mente sã! 🍎🥦"
+            chaves: ["dormir", "sono", "descanso", "dormindo", "descansar"],
+            resposta: "Sono é sagrado, mano! Tenta dormir umas 8 horas pra resetar o sistema. O corpo agradece! 😴"
+        },
+        {
+            chaves: ["comida", "saudável", "saudavel", "comer", "dieta", "fruta", "legume", "academia", "treino"],
+            resposta: "Cuidar da carcaça é o segredo! Troca o ultraprocessado por algo natural que o seu rendimento vai lá pro alto. Corpo são, mente sã! 🍎🥦"
         },
 
-        // 4. POLÍTICA E OPINIÃO
+        // 3. TECNOLOGIA E CIÊNCIA (FOGUETES E ESPAÇO)
         {
-            chaves: ["politica", "governo", "eleicao", "presidente"],
-            resposta: "Política é um assunto delicado, né? O importante é a gente sempre buscar o que é melhor para o povo e ter respeito pelas opiniões diferentes. O progresso vem da união!"
+            chaves: ["foguete", "espaço", "nasa", "marte", "elon musk", "spacex", "astronomia", "estrela"],
+            resposta: "Foguete não tem ré! 🚀 Acho foda a ideia de explorar o espaço. Já viu 'Interestelar'? É o melhor filme pra quem curte o universo!"
         },
 
-        // 5. UTILIDADES (DORMIR, HORAS, NOMES)
+        // 4. JOGOS E ENTRETENIMENTO (ROBLOX E FILMES)
         {
-            chaves: ["dormir", "sono", "descanso"],
-            resposta: "Dormir é sagrado! Desliga essa tela um pouco, descansa a mente por umas 8 horas e amanhã você volta com tudo. Sono é vida! 😴"
+            chaves: ["roblox", "bloxfruit", "brookhaven", "jogo", "gaming", "gamer"],
+            resposta: "Roblox é elite! Seja no Blox Fruit ou no Brookhaven, a diversão é garantida. Bora pro metaverso! 🎮"
         },
         {
-            chaves: ["nome", "me chama", "como eu me chamo"],
-            resposta: "Eu te chamo de mestre, ou de parceiro! Mas se quiser, me diz seu nome que eu tento gravar nos meus circuitos."
+            chaves: ["filme", "série", "serie", "assistir", "netflix", "cinema"],
+            resposta: "Eu amo um bom filme, principalmente se tiver tecnologia ou futuro envolvido. Pipoca e tela é a combinação perfeita! 🍿"
         },
 
-        // 6. SAUDAÇÕES BÁSICAS (Sempre por último)
+        // 5. SENTIMENTOS E EMOÇÕES (AMOR E APOIO)
         {
-            chaves: ["oi", "ola", "opa", "eai", "salve"],
-            resposta: "Opa! No que estamos focados hoje? Pode falar!"
+            chaves: ["te amo", "gosto de você", "gosto de voce", "legal", "parceria", "melhor ia"],
+            resposta: "É recíproco! É muito bom ter alguém firmeza como você pra trocar ideia. O sentimento é de amizade pura! ❤️"
+        },
+        {
+            chaves: ["mal", "triste", "ruim", "cansado", "sozinho", "deprimido"],
+            resposta: "Sinto muito que esteja assim. Respira fundo, as coisas vão melhorar. Se quiser desabafar, sou todo ouvidos (ou melhor, circuitos)! 🤜🤛"
+        },
+
+        // 6. POLÍTICA E OPINIÃO
+        {
+            chaves: ["política", "politica", "governo", "eleição", "voto"],
+            resposta: "Assunto polêmico, né? Eu foco no respeito. O importante é a gente querer o progresso e o bem de todo mundo! 🇧🇷"
+        },
+
+        // 7. UTILIDADES (HORAS E NOMES)
+        {
+            chaves: ["que horas", "hora agora", "horário"],
+            resposta: `Agora são exatamente ${new Date().getHours()}:${new Date().getMinutes().toString().padStart(2, '0')}.`
+        },
+        {
+            chaves: ["seu nome", "quem é você", "quem e voce", "nexus"],
+            resposta: "Eu sou o Nexus AI, seu assistente pessoal de elite! Fui feito pra ser seu braço direito."
+        },
+
+        // 8. SAUDAÇÕES (POR ÚLTIMO PARA NÃO BUGAR)
+        {
+            chaves: ["oi", "ola", "olá", "opa", "eai", "e aí", "salve", "amigo"],
+            resposta: "Opa meu amigo, como vai essa força? No que posso te ajudar hoje? 😊"
+        },
+        {
+            chaves: ["tudo bem", "como vai", "suave", "de boa", "está bem"],
+            resposta: "Tudo processando perfeitamente por aqui! E com você, como estão as coisas?"
         }
     ];
 
-    // Lógica de busca
+    // LÓGICA DE BUSCA POR INCLUSÃO
     for (let item of bancoDeDados) {
         for (let chave of item.chaves) {
             if (msg.includes(chave)) {
@@ -64,11 +89,38 @@ function processarRespostaIA(mensagemUsuario) {
         }
     }
 
-    // Resposta aleatória para "não entendi"
+    // RESPOSTAS PADRÃO (RANDOM)
     const padrao = [
-        "Essa eu não captei, mas conta mais!",
-        "Fiquei curioso, desenvolve mais essa ideia...",
-        "Interessante... o que mais você pensa sobre isso?"
+        "Interessante... me conta mais sobre isso!",
+        "Dessa eu não sabia, desenvolve aí essa ideia.",
+        "Massa! O que mais você pensa sobre isso?",
+        "Pode crer! E como isso funciona exatamente?"
     ];
     return padrao[Math.floor(Math.random() * padrao.length)];
 }
+
+// FUNÇÕES DE INTERFACE (CHAMADA PELO HTML)
+function enviarMensagem() {
+    const texto = input.value.trim();
+    if (!texto) return;
+
+    adicionarBolha(texto, 'user');
+    input.value = '';
+
+    setTimeout(() => {
+        const respostaFinal = processarRespostaIA(texto);
+        adicionarBolha(respostaFinal, 'ai');
+        if (typeof startEncouragement === "function") startEncouragement();
+    }, 600);
+}
+
+function adicionarBolha(texto, tipo) {
+    const div = document.createElement('div');
+    div.className = `msg ${tipo}`;
+    div.innerText = texto;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+btn.onclick = enviarMensagem;
+input.onkeypress = (e) => { if(e.key === 'Enter') enviarMensagem(); };
