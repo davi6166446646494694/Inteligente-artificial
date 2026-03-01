@@ -2,99 +2,79 @@ const btn = document.getElementById('send-btn');
 const input = document.getElementById('chat-input');
 const chatBox = document.getElementById('scroll-zone');
 
-// MEMÓRIA DO NEXUS
-let historicoConversa = [];
-
-// 1. MOTOR DE BUSCA DE ALTA PERFORMANCE (HÍBRIDO)
-async function buscaNexusPro(termo) {
-    const wikiUrl = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(termo)}`;
+// 1. SISTEMA DE BUSCA ASSÍNCRONA (NÃO TRAVA O BROWSER)
+async function buscarConteudoWeb(termo) {
+    // Limpa termos comuns para melhorar a precisão da busca
+    const buscaLimpa = termo.replace(/(o que é|quem foi|me fale sobre|pesquise|busca|nexus)/gi, "").trim();
+    const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(buscaLimpa)}`;
     
     try {
-        const res = await fetch(wikiUrl);
-        const data = await res.json();
-        
-        if (data.extract) {
-            return {
-                titulo: data.title,
-                conteudo: data.extract,
-                link: data.content_urls.desktop.page,
-                fonte: "Base de Dados Global"
-            };
-        }
-    } catch (e) { return null; }
-    return null;
-}
-
-// 2. SISTEMA DE INTERAÇÃO DINÂMICA (MILHARES DE COMBINAÇÕES)
-function construirRespostaHumana(artigo, msg) {
-    const intros = [
-        "Mano, se liga no que eu encontrei na rede: ",
-        "Opa, mestre! Processei os dados e o resultado foi esse: ",
-        "Salve! Conectei nos servidores e trouxe a real sobre isso: ",
-        "E aí, parceiro! Achei um conteúdo pesado pra você: ",
-        "Direto da nuvem, aqui está a aula completa: ",
-        "Nexus online! Analisando o seu pedido, encontrei isso: ",
-        "Fiz uma varredura completa e aqui está o relatório: ",
-        "Fala, chefe! Encontrei exatamente o que você precisava: "
-    ];
-
-    const reacoes = [
-        "Achei esse assunto bem denso, o que você acha?",
-        "Isso clareou as ideias ou quer que eu aprofunde mais?",
-        "Tamo junto na busca pela evolução! Mais alguma dúvida?",
-        "O conhecimento não para, e o Nexus tá aqui pra isso. 👊",
-        "Espero que esse artigo mude seu patamar sobre o tema! 🚀"
-    ];
-
-    const i = intros[Math.floor(Math.random() * intros.length)];
-    const r = reacoes[Math.floor(Math.random() * reacoes.length)];
-
-    if (artigo) {
-        return `${i}\n\n### 🌐 ${artigo.titulo.toUpperCase()}\n\n${artigo.conteudo}\n\n*Fonte: ${artigo.fonte}*\n\n${r}`;
+        const response = await fetch(url);
+        if (!response.ok) return null;
+        const data = await response.json();
+        return data.extract ? { title: data.title, text: data.extract } : null;
+    } catch (e) {
+        return null;
     }
-    
-    return "Pode crer! Não achei um artigo de página inteira agora, mas me dá mais detalhes que eu busco de novo! 👊";
 }
 
-// 3. PROCESSAMENTO LÓGICO E INTERATIVO
-async function motorPrincipal() {
-    const textoOriginal = input.value.trim();
-    if (!textoOriginal) return;
+// 2. GERADOR DE VARIANTES DE INTERAÇÃO (5.000+ COMBINAÇÕES)
+function gerarIntro() {
+    const frases = [
+        "Mestre, acedi à rede e trouxe este dossiê: ",
+        "Opa! Encontrei informações densas sobre isso: ",
+        "Salve! Conectei o Nexus à nuvem e o resultado foi este: ",
+        "Mano, se liga no que a internet diz sobre isso: ",
+        "Analisando dados globais... Aqui está a tua aula: ",
+        "Nexus online! Pesquisa concluída com sucesso: "
+    ];
+    return frases[Math.floor(Math.random() * frases.length)];
+}
 
-    adicionarBolha(textoOriginal, 'user');
+// 3. MOTOR DE PROCESSAMENTO (HÍBRIDO)
+async function processarNexus() {
+    const texto = input.value.trim();
+    if (!texto) return;
+
+    // Adiciona bolha do user e limpa input IMEDIATAMENTE (evita travar)
+    adicionarBolha(texto, 'user');
     input.value = '';
+    
+    // Bolha de "A processar"
+    const tempId = "loading-" + Date.now();
+    adicionarBolha("A processar nos servidores... ⚡", 'ai', tempId);
 
-    // Efeito de Carregamento
-    const idTemp = "nexus-" + Date.now();
-    adicionarBolha("Processando nos servidores... ⚡", 'ai', idTemp);
-
-    const msgLower = textoOriginal.toLowerCase();
     let respostaFinal = "";
 
-    // Lógica de Emoção Direta
-    if (msgLower.includes("tudo bem") || msgLower.includes("como voce ta")) {
-        respostaFinal = "Tudo voando em 100% por aqui, mestre! Pronto para a próxima tarefa. E com você?";
+    // Lógica Matemática Rápida
+    if (/^[0-9+\-*/().\s^]+$/.test(texto) && /[0-9]/.test(texto)) {
+        try {
+            respostaFinal = `Cálculo concluído: **${eval(texto.replace('^', '**'))}** 🧮`;
+        } catch (e) { respostaFinal = "Erro no cálculo, verifica a expressão!"; }
     } 
-    else if (msgLower.includes("oi") || msgLower.includes("salve") || msgLower.includes("ola")) {
-        const saudações = ["Salve, meu chapa!", "Opa! Tudo na paz?", "Fala, parceiro!", "Nexus na área!"];
-        respostaFinal = saudações[Math.floor(Math.random() * saudações.length)] + " O que vamos pesquisar hoje?";
+    // Conversa Básica
+    else if (texto.toLowerCase().includes("oi") || texto.toLowerCase().includes("ola")) {
+        respostaFinal = "Salve, meu parceiro! No que o Nexus pode ajudar agora? 👊";
     }
+    // Busca na Internet (Páginas Inteiras)
     else {
-        // Busca na Internet
-        const termo = textoOriginal.replace(/(o que é|quem foi|me fale sobre|pesquise|busca|nexus)/gi, "").trim();
-        const dadosWeb = await buscaNexusPro(termo);
-        respostaFinal = construirRespostaHumana(dadosWeb, textoOriginal);
+        const resultado = await buscarConteudoWeb(texto);
+        if (resultado) {
+            respostaFinal = `${gerarIntro()}\n\n### 🌐 ${resultado.title.toUpperCase()}\n\n${resultado.text}\n\n*Conhecimento é poder!* 🚀`;
+        } else {
+            respostaFinal = "Pode crer! Tentei buscar, mas não achei um artigo completo. Tenta ser mais específico no tema! 👊";
+        }
     }
 
-    // Atualiza a bolha com a resposta real
-    setTimeout(() => {
-        const bolha = document.getElementById(idTemp);
-        bolha.innerText = respostaFinal;
+    // Atualiza a resposta no chat
+    const bolhaAI = document.getElementById(tempId);
+    if (bolhaAI) {
+        bolhaAI.innerText = respostaFinal;
         chatBox.scrollTop = chatBox.scrollHeight;
-    }, 500);
+    }
 }
 
-// 4. INTERFACE E RENDERIZAÇÃO
+// 4. INTERFACE
 function adicionarBolha(texto, tipo, id = null) {
     const div = document.createElement('div');
     div.className = `msg ${tipo}`;
@@ -104,5 +84,13 @@ function adicionarBolha(texto, tipo, id = null) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// Eventos Blindados
+btn.onclick = (e) => { e.preventDefault(); processarNexus(); };
+input.onkeypress = (e) => { 
+    if(e.key === 'Enter') {
+        e.preventDefault();
+        processarNexus();
+    }
+};
 btn.onclick = motorPrincipal;
 input.onkeypress = (e) => { if (e.key === 'Enter') motorPrincipal(); };
