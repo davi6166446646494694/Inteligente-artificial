@@ -11,20 +11,3 @@ function processarMensagem(mensagemUsuario) {
     const ehMensagemInvalida = frasesDeSistema.some(frase => 
         mensagemUsuario.toLowerCase().includes(frase)
     );
-
-    // Se for mensagem de sistema, para a execução aqui mesmo
-    if (ehMensagemInvalida) {
-        console.log("Sistema: Ignorando mensagem de log/scroll.");
-        return null; 
-    }
-
-    // 2. LÓGICA DE CUMPRIMENTO (Só chega aqui se não for lixo)
-    const gatilhosSaudacao = ["oi", "olá", "bom dia", "boa tarde", "e aí"];
-    const mensagemLimpa = mensagemUsuario.toLowerCase().trim();
-
-    if (gatilhosSaudacao.includes(mensagemLimpa)) {
-        return "Olá! Agora sim, parei de repetir aquele erro.";
-    }
-
-    return "Entendido. Como posso ajudar?";
-}
