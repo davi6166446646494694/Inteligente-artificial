@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chat</title>
+<style>
+body{
+    background:#111;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    font-family:Arial;
+}
+
+.chat{
+    width:350px;
+    height:450px;
+    background:#222;
+    display:flex;
+    flex-direction:column;
+    border-radius:8px;
+}
+
+.messages{
+    flex:1;
+    padding:10px;
+    overflow-y:auto;
+    color:white;
+}
+
+input{
+    border:none;
+    padding:10px;
+    outline:none;
+    background:#333;
+    color:white;
+}
+
+button{
+    border:none;
+    padding:10px;
+    background:#00aa55;
+    color:white;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="chat">
+    <div class="messages" id="messages"></div>
+    <input type="text" id="input" placeholder="Digite..." onkeydown="if(event.key==='Enter')send()">
+    <button onclick="send()">Enviar</button>
+</div>
+
+<script>
+function send(){
+    let input = document.getElementById("input");
+    let messages = document.getElementById("messages");
+
+    if(input.value.trim() === "") return;
+
+    messages.innerHTML += "<div>Você: "+input.value+"</div>";
+    messages.innerHTML += "<div>Bot: Eu recebi: "+input.value+"</div>";
+
+    input.value = "";
+    messages.scrollTop = messages.scrollHeight;
+}
+</script>
+
+</body>
+</html>
