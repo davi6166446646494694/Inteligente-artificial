@@ -1,110 +1,153 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login + Chat IA</title>
-  <style>
-    /* ===== Estilo geral ===== */
-    body {
-      font-family: Arial, sans-serif;
-      background: #1e1e1e;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minha IA</title>
 
-    /* ===== Container ===== */
-    .container {
-      width: 520px;
-      background: #2e2e2e;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-      padding: 30px;
-      text-align: center;
-    }
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0f0f0f;
+    color: white;
+    display: flex;
+    height: 100vh;
+}
 
-    h1, h2 {
-      margin-bottom: 20px;
-    }
+.sidebar {
+    width: 250px;
+    background: #171717;
+    padding: 10px;
+    overflow-y: auto;
+}
 
-    /* ===== Inputs e Botões ===== */
-    input[type="text"], input[type="password"] {
-      width: 90%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      border: none;
-      font-size: 16px;
-      outline: none;
-    }
+.sidebar h2 {
+    font-size: 16px;
+}
 
-    input[type="text"]::placeholder,
-    input[type="password"]::placeholder {
-      color: #999;
-    }
+.chat-item {
+    padding: 8px;
+    background: #222;
+    margin-bottom: 5px;
+    cursor: pointer;
+    border-radius: 6px;
+}
 
-    button {
-      background-color: #4fc3f7;
-      color: black;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-top: 10px;
-      transition: 0.3s;
-    }
+.chat-item:hover {
+    background: #333;
+}
 
-    button:hover {
-      background-color: #6ac7f9;
-    }
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
 
-    /* ===== Chat ===== */
-    #chat {
-      width: 100%;
-      height: 300px;
-      background: #1e1e1e;
-      border: 2px solid #444;
-      padding: 10px;
-      overflow-y: auto;
-      margin-top: 20px;
-      border-radius: 10px;
-      display: none; /* começa oculto */
-    }
+.messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
 
-    #entrada {
-      width: 80%;
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      margin-top: 10px;
-      outline: none;
-      display: none; /* começa oculto */
-    }
+.message {
+    margin-bottom: 10px;
+}
 
-    #botaoEnviar {
-      display: none; /* começa oculto */
-      padding: 10px 15px;
-      border-radius: 5px;
-      border: none;
-      background: #4fc3f7;
-      color: black;
-      cursor: pointer;
-      font-weight: bold;
-      margin-left: 5px;
-    }
+.user { color: #4da6ff; }
+.bot { color: #00ff99; }
 
-    /* ===== Mensagem de login ===== */
-    #mensagem {
-      margin-top: 10px;
-      font-size: 14px;
-    }
+.input-area {
+    display: flex;
+    padding: 10px;
+    background: #171717;
+}
 
-    /* ===== Balões de mensagem ===== */
+input {
+    flex: 1;
+    padding: 10px;
+    background: #222;
+    border: none;
+    color: white;
+    border-radius: 6px;
+}
+
+button {
+    margin-left: 5px;
+    padding: 10px;
+    background: #4da6ff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Histórico</h2>
+    <div id="history"></div>
+</div>
+
+<div class="main">
+    <div class="messages" id="messages"></div>
+    <div class="input-area">
+        <input type="text" id="input" placeholder="Pergunte algo...">
+        <button onclick="send()">Enviar</button>
+    </div>
+</div>
+
+<script>
+let chats = JSON.parse(localStorage.getItem("chats")) || {};
+let currentChat = Date.now().toString();
+
+function save() {
+    localStorage.setItem("chats", JSON.stringify(chats));
+}
+
+function renderHistory() {
+    const history = document.getElementById("history");
+    history.innerHTML = "";
+    for (let id in chats) {
+        let div = document.createElement("div");
+        div.className = "chat-item";
+        div.innerText = chats[id][0]?.text || "Nova conversa";
+        div.onclick = () => loadChat(id);
+        history.appendChild(div);
+    }
+}
+
+function loadChat(id) {
+    currentChat = id;
+    const messagesDiv = document.getElementById("messages");
+    messagesDiv.innerHTML = "";
+    chats[id].forEach(msg => {
+        messagesDiv.innerHTML += `<div class="message ${msg.type}"><b>${msg.type}:</b> ${msg.text}</div>`;
+    });
+}
+
+function send() {
+    const input = document.getElementById("input");
+    const text = input.value;
+    if (!text) return;
+
+    if (!chats[currentChat]) chats[currentChat] = [];
+
+    chats[currentChat].push({type:"user", text});
+    chats[currentChat].push({type:"bot", text:"Resposta automática da IA 🤖"});
+
+    save();
+    loadChat(currentChat);
+    renderHistory();
+
+    input.value = "";
+}
+
+renderHistory();
+</script>
+
+</body>
+</html>    /* ===== Balões de mensagem ===== */
     .mensagem-usuario {
       color: #4fc3f7;
       text-align: right;
