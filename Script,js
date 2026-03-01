@@ -1,56 +1,40 @@
-// banco_de_dados.js
-
 const bancoSaudacoes = {
-    // Gatilhos que a IA deve reconhecer
-    entradas: ["oi", "olá", "bom dia", "boa tarde", "boa noite", "e aí", "opa"],
-
-    // Respostas possíveis para variar a interação
+    // Usamos RegExp para garantir que a palavra esteja isolada (\b)
+    gatilhos: [/\boi\b/i, /\bolá\b/i, /\be aí\b/i, /\bom dia\b/i],
+    
     respostas: [
-        "Olá! Como posso ajudar você hoje?",
-        "Oi! Tudo bem por aqui. E com você?",
-        "Opa! Em que posso ser útil?",
-        "Saudações! Sou sua assistente virtual. O que vamos fazer agora?"
+        "Olá! Como posso ajudar?",
+        "Oi! Tudo certo por aqui.",
+        "Opa! O que mandas?"
     ],
 
-    // Função para selecionar uma resposta aleatória
     gerarResposta() {
-        const index = Math.floor(Math.random() * this.respostas.length);
-        return this.respostas[index];
+        return this.respostas[Math.floor(Math.random() * this.respostas.length)];
     }
 };
 
-// Lógica de processamento simples
-function processarSaudacao(mensagemUsuario) {
-    const mensagemFormatada = mensagemUsuario.toLowerCase().trim();
+function processarMensagem(mensagemUsuario) {
+    // 1. Filtro de mensagens automáticas de sistema
+    // Se a mensagem contiver termos típicos de logs ou scrolls, a IA ignora
+    const termosIgnorar = ["scroll automático", "recebi!", "mensagem do sistema"];
+    const ehMensagemSistema = termosIgnorar.some(termo => 
+        mensagemUsuario.toLowerCase().includes(termo)
+    );
 
-    // Verifica se a mensagem contém algum dos gatilhos
-    const encontrouGatilho = bancoSaudacoes.entradas.some(gatilho => 
-        mensagemFormatada.includes(gatilho)
+    if (ehMensagemSistema) return null; // Não responde nada
+
+    // 2. Verificação de saudação real
+    const encontrouGatilho = bancoSaudacoes.gatilhos.some(regex => 
+        regex.test(mensagemUsuario)
     );
 
     if (encontrouGatilho) {
         return bancoSaudacoes.gerarResposta();
-    } else {
-        return "Desculpe, ainda estou aprendendo. Pode repetir de outra forma?";
     }
+
+    return "Entendi, mas não sei como responder a isso ainda.";
 }
 
-// Teste rápido
-console.log(processarSaudacao("Oi, tudo bem?"));
-    const span = document.createElement('span');
-    span.innerText = text;
-
-    messageDiv.appendChild(strong);
-    messageDiv.appendChild(span);
-    chatOutput.appendChild(messageDiv);
-    
-    // Rolagem automÃ¡tica para o fim
-    chatOutput.scrollTop = chatOutput.scrollHeight;
-
-    return messageDiv.id; // Retorna ID se for loading
-}
-
-function removeMessage(id) {
-    const element = document.getElementById(id);
-    if (element) element.remove();
-}
+// TESTES:
+console.log(processarMensagem("Oi, tudo bem?")); // Responde: "Olá!..."
+console.log(processarMensagem("Recebi! O scroll automático garantiu...")); // Responde: null (Silêncio)
