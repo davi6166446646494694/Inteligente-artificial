@@ -1,5 +1,6 @@
 const btn = document.getElementById('send-btn');
 const input = document.getElementById('chat-input');
+const chatBox = document.getElementById('scroll-zone');
 
 // MEMÓRIA DO NEXUS
 let historicoConversa = [];
@@ -105,4 +106,3 @@ function adicionarBolha(texto, tipo, id = null) {
 
 btn.onclick = motorPrincipal;
 input.onkeypress = (e) => { if (e.key === 'Enter') motorPrincipal(); };
-q
