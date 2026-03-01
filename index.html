@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus AI - 350px</title>
+    <title>Nexus AI - Cérebro Ativo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,98 +12,121 @@
             --border: rgba(255, 255, 255, 0.1);
             --accent: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
         body { 
-            background-color: var(--bg); 
-            color: white; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden;
-            width: 350px; /* Travado na largura que você pediu */
-            margin: 0 auto; /* Centraliza se a tela for maior */
-            border-left: 1px solid var(--border);
-            border-right: 1px solid var(--border);
+            background-color: var(--bg); color: white; height: 100vh; display: flex; 
+            flex-direction: column; overflow: hidden; width: 350px; margin: 0 auto;
+            border-left: 1px solid var(--border); border-right: 1px solid var(--border);
         }
-
-        .header { 
-            padding: 12px; 
-            border-bottom: 1px solid var(--border); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            background: rgba(0,0,0,0.8);
-        }
-
-        .chat-box { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 15px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            scroll-behavior: smooth;
-        }
-
-        .msg { 
-            max-width: 85%; 
-            padding: 10px 14px; 
-            border-radius: 18px; 
-            font-size: 14px; 
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
+        .header { padding: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); }
+        .chat-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
         .ai { background: var(--glass); align-self: flex-start; border: 1px solid var(--border); }
         .user { background: #6366f1; align-self: flex-end; color: white; }
-
-        .input-area { 
-            padding: 12px; 
-            background: #0a0a0c; 
-            border-top: 1px solid var(--border); 
-        }
-
-        .input-box { 
-            display: flex; 
-            align-items: center; 
-            background: rgba(255,255,255,0.03); 
-            border-radius: 22px; 
-            padding: 4px 12px; 
-            border: 1px solid var(--border);
-        }
-
-        input { 
-            flex: 1; 
-            background: transparent; 
-            border: none; 
-            color: white; 
-            outline: none; 
-            height: 38px; 
-            font-size: 14px;
-            min-width: 0; /* Impede o input de empurrar os botões */
-        }
-
-        .btn { 
-            background: none; 
-            border: none; 
-            color: #818cf8; 
-            cursor: pointer; 
-            padding: 6px; 
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            transition: transform 0.1s;
-        }
-
-        .btn:active { transform: scale(0.9); }
-
+        .input-area { padding: 12px; background: #0a0a0c; border-top: 1px solid var(--border); }
+        .input-box { display: flex; align-items: center; background: rgba(255,255,255,0.03); border-radius: 22px; padding: 4px 12px; border: 1px solid var(--border); }
+        input { flex: 1; background: transparent; border: none; color: white; outline: none; height: 38px; font-size: 14px; min-width: 0; }
+        .btn { background: none; border: none; color: #818cf8; cursor: pointer; padding: 6px; font-size: 18px; display: flex; align-items: center; }
         .mic-active { color: #ff4b4b; animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
+
+    <header class="header">
+        <span style="font-weight: 600; font-size: 14px;">NEXUS AI</span>
+        <span id="status" style="font-size: 9px; color: #6366f1; font-weight: bold;">ONLINE</span>
+    </header>
+
+    <div class="chat-box" id="chat-box">
+        <div class="msg ai">Nexus AI pronto para conversar. Pode falar ou digitar!</div>
+    </div>
+
+    <div class="input-area">
+        <div class="input-box">
+            <input type="text" id="user-input" placeholder="Mensagem..." autocomplete="off">
+            <button class="btn" id="mic-btn">🎤</button>
+            <button class="btn" id="send-btn">🚀</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const input = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const micBtn = document.getElementById('mic-btn');
+        const status = document.getElementById('status');
+
+        function falar(texto) {
+            window.speechSynthesis.cancel(); // Para a fala anterior antes de começar a nova
+            const utterance = new SpeechSynthesisUtterance(texto);
+            utterance.lang = 'pt-BR';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'pt-BR';
+            micBtn.onclick = () => { recognition.start(); micBtn.classList.add('mic-active'); status.innerText = "OUVINDO..."; };
+            recognition.onresult = (event) => { input.value = event.results[0][0].transcript; sendMessage(); };
+            recognition.onend = () => { micBtn.classList.remove('mic-active'); status.innerText = "ONLINE"; };
+        }
+
+        function addMessage(text, type) {
+            const m = document.createElement('div');
+            m.className = `msg ${type}`;
+            m.innerText = text;
+            chatBox.appendChild(m);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // --- ESTA É A FUNÇÃO QUE VOCÊ QUERIA MUDAR ---
+        function sendMessage() {
+            const rawText = input.value.trim();
+            if (!rawText) return;
+
+            const text = rawText.toLowerCase(); // Facilita a comparação
+            addMessage(rawText, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                let resposta = "";
+
+                // Lógica de Respostas (Cérebro)
+                if (text.includes("oi") || text.includes("olá")) {
+                    resposta = "Olá, mestre! Como vai o projeto Nexus?";
+                } 
+                else if (text.includes("quem é você") || text.includes("seu nome")) {
+                    resposta = "Eu sou o Nexus AI, sua inteligência artificial feita para celular!";
+                }
+                else if (text.includes("horas")) {
+                    resposta = "Agora são exatamente " + new Date().toLocaleTimeString();
+                }
+                else if (text.includes("tudo bem")) {
+                    resposta = "Tudo ótimo por aqui! Estou rodando perfeitamente a 350 DPI.";
+                }
+                else if (text.includes("fazer")) {
+                    resposta = "Eu posso conversar com você, te dar as horas ou testar seus comandos de voz!";
+                }
+                else if (text.includes("obrigado") || text.includes("valeu")) {
+                    resposta = "De nada! É um prazer ajudar.";
+                }
+                else {
+                    // Resposta para quando ela não conhece a palavra
+                    resposta = "Entendi! Me fale mais sobre isso ou tente me perguntar as horas.";
+                }
+
+                addMessage(resposta, 'ai');
+                falar(resposta);
+            }, 600);
+        }
+
+        sendBtn.onclick = sendMessage;
+        input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
+    </script>
+</body>
+</html>
 
     <header class="header">
         <span style="font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">NEXUS AI</span>
